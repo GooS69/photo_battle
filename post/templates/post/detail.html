@@ -5,7 +5,17 @@
     <title>Title</title>
 </head>
 <body>
+    {% load static %}
+
+    <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
+
     <H3>{{ post.name }}</H3>
     <img src="{{ post.img_url }}" alt="img">
+    {% if comments %}
+    {% for comment in comments %}
+        <H5>{{ comment.owner.username }}</H5>
+        <p>{{ comment.text }}</p>
+    {% endfor %}
+    {% endif %}
 </body>
 </html>

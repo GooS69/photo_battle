@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% load static %}
+
+    <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
+
+    {% if posts %}
+        {% for post in posts %}
+            <p><a href="{{ post.id }}">{{ post.name }}</a></p>
+            <img class="small_img" src="{{ post.img_url }}" alt="img" >
+        {% endfor %}
+    {% else %}
+        <p>No posts are available.</p>
+    {% endif %}
+</body>
+</html>
