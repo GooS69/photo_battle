@@ -7,10 +7,11 @@
 <body>
     {% load static %}
 
-    <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
 
     <H3>{{ post.name }}</H3>
-    <img src="{{ post.img_url }}" alt="img">
+    <img src="{{ post.img_url }}" alt="img" class="main_img">
+    <div>{{ post.likes }}♥</div>
     {% if comments %}
     {% for comment in comments %}
         <H5>{{ comment.owner.username }}</H5>

@@ -13,6 +13,7 @@
         {% for post in posts %}
             <p><a href="{{ post.id }}">{{ post.name }}</a></p>
             <img class="small_img" src="{{ post.img_url }}" alt="img" >
+
         {% endfor %}
     {% else %}
         <p>No posts are available.</p>
