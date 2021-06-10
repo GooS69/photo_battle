@@ -8,16 +8,22 @@
     {% load static %}
 
     <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
-    <p><a href="/login/vk-oauth2">Vk auth</a></p>
+
+    {% if user.is_authenticated %}
+        <p>Hi {{ user.first_name }}</p>
+        <p><a href="{% url 'post:logout' %}">Logout</a></p>
+    {% else %}
+        <p><a href="/login/vk-oauth2">Login with Vk</a></p>
+    {% endif %}
 
     {% if posts %}
         {% for post in posts %}
             <p><a href="{{ post.id }}">{{ post.name }}</a></p>
             <img class="small_img" src="{{ post.img_url }}" alt="img" >
-
         {% endfor %}
     {% else %}
         <p>No posts are available.</p>
     {% endif %}
+
 </body>
 </html>
