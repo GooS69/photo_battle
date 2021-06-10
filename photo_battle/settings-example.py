@@ -149,7 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 prod_db = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
 
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.vk.VKOAuth2',
@@ -159,3 +159,15 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['photos']
 
 LOGIN_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)

@@ -1,14 +1,10 @@
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from .models import Post, Comment
 
 
 def index(request):
     posts = Post.objects.all()
-    if not posts:
-        return HttpResponse("<H3>No posts</H3>")
-    else:
-        return render(request, 'post/index.html', context={'posts':posts})
+    return render(request, 'post/index.html', context={'posts':posts})
 
 
 def detail(request, post_id):
