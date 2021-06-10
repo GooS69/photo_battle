@@ -11,7 +11,7 @@
 
     <H3>{{ post.name }}</H3>
     <img src="{{ post.img_url }}" alt="img" class="main_img">
-    <div>{{ post.likes }}♥</div>
+    <div>{{ post.get_likes_count }}♥</div>
     {% if comments %}
     {% for comment in comments %}
         <H5>{{ comment.owner.username }}</H5>

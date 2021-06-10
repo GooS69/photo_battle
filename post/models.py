@@ -9,21 +9,10 @@ class Post(models.Model):
 	name = models.CharField(max_length=30, default='')
 
 	def get_likes_count(self):
-		print()
+		return self.likes.count()
 
 	def __str__(self):
 		return self.name
-
-
-#class Like(models.Model):
-#	likes = models.ManyToManyField(User)
-#	post = models.OneToOneField(Post, on_delete=models.CASCADE)
-#
-#	def get_likes_count(self):
-#		print()
-#
-#	def __str__(self):
-#		return 'likes for ' + self.post.name
 
 
 class Comment(models.Model):
