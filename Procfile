@@ -1,1 +1,0 @@
-web: gunicorn photo_battle.wsgi --log-file -
