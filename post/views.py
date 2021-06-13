@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
-from .models import Post, Comment
+from .models.post import Post
+from .models.comment import Comment
 
 
 def index(request):
