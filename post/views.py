@@ -1,22 +1,20 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import logout
-from django.http import HttpResponseRedirect
+from django.views.generic import ListView, DetailView
 from .models.post import Post
 from .models.comment import Comment
 
 
-def index(request):
-    posts = Post.objects.all()
-    return render(request, 'post/index.html', context={'posts': posts})
+class MainPage(ListView):
+    model = Post
+    template_name = 'post/index.html'
+    context_object_name = 'posts'
 
 
-def detail(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    comments = Comment.objects.filter(post_id=post_id)
+class DetailPage(DetailView):
+    model = Post
+    template_name = 'post/detail.html'
+    context_object_name = 'post'
 
-    return render(request, 'post/detail.html', context={'post': post, 'comments': comments})
-
-
-def auth_logout(request):
-    logout(request)
-    return redirect('post:index')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = Comment.objects.filter(post_id=self.kwargs.get(self.pk_url_kwarg))
+        return context
