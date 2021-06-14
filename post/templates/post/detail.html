@@ -10,11 +10,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
 
     <H3>{{ post.name }}</H3>
-    <img src="{{ post.img_url }}" alt="img" class="main_img">
-    <div>{{ post.get_likes_count }}♥</div>
+    <img src="{{ post.img_large.url }}" alt="img" class="main_img">
+    <div>♥</div>
     {% if comments %}
     {% for comment in comments %}
-        <H5>{{ comment.owner.username }}</H5>
+        <H5>{{ comment.author.username }}</H5>
         <p>{{ comment.text }}</p>
     {% endfor %}
     {% endif %}
