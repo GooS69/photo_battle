@@ -12,7 +12,7 @@ def index(request):
 
 def detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    comments = Comment.objects.filter(parent_id=post_id)
+    comments = Comment.objects.filter(post_id=post_id)
 
     return render(request, 'post/detail.html', context={'post': post, 'comments': comments})
 
