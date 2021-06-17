@@ -7,6 +7,9 @@ class Comment(models.Model):
 	post = models.ForeignKey('post', on_delete=models.CASCADE)
 	parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, default=None, blank=True)
 
+	class Meta:
+		db_table = "Comment"
+
 	def __str__(self):
 		return 'comment for ' + self.post.name + ' from ' + self.author.username
 
