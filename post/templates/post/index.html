@@ -11,6 +11,7 @@
 
     {% if user.is_authenticated %}
         <p>Hi {{ user.first_name }}</p>
+        <p><a href="{% url 'post:new_post' %}">Create new post</a></p>
         <p><a href="{% url 'post:logout' %}">Logout</a></p>
     {% else %}
         <p><a href="/login/vk-oauth2">Login with Vk</a></p>

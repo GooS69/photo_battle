@@ -1,4 +1,5 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse_lazy
 from .models.post import Post
 from .models.comment import Comment
 
@@ -16,5 +17,16 @@ class DetailPage(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = Comment.objects.filter(post_id=self.kwargs.get(self.pk_url_kwarg))
+        context['comments'] = Comment.objects.filter(post_id=self.kwargs['pk'])
         return context
+
+
+class CreateNewPost(CreateView):
+    model = Post
+    fields = ['name', 'img_large']
+    template_name = 'post/new_post.html'
+    success_url = reverse_lazy('post:main_page')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
