@@ -1,4 +1,5 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models.post import Post
 from .models.comment import Comment
@@ -21,7 +22,9 @@ class DetailPage(DetailView):
         return context
 
 
-class CreateNewPost(CreateView):
+class CreateNewPost(LoginRequiredMixin, CreateView):
+    login_url = '/login/vk-oauth2'
+
     model = Post
     fields = ['name', 'img_large']
     template_name = 'post/new_post.html'
@@ -30,3 +33,10 @@ class CreateNewPost(CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+class UpdatePost(UpdateView):
+    model = Post
+    fields = ['name', 'img_large']
+    template_name = 'post/update_post.html'
+    success_url = reverse_lazy('post:main_page')
