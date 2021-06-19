@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from .models.post import Post
 from .models.comment import Comment
@@ -44,3 +45,17 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
 #    fields = ['name', 'img_large']
 #    template_name = 'post/update_post.html'
 #    success_url = reverse_lazy('post:main_page')
+
+
+class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = User
+    template_name = 'post/user.html'
+    context_object_name = 'user'
+
+    def test_func(self):
+        return self.request.user == self.get_object()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'])
+        return context

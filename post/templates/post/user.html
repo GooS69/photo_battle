@@ -9,20 +9,21 @@
 
     <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
 
-    {% if user.is_authenticated %}
-        <p><a href="{% url 'post:user_page' user.id %}">Hi {{ user.first_name }}</a></p>
+    <H1>Personal area</H1>
+    <p>Name: {{ user.first_name }}</p>
+    <p><a href="{% url 'post:logout' %}">Logout</a></p>
+    <p><a href="{% url 'post:new_post' %}">Create new post</a></p>
 
-    {% else %}
-        <p><a href="/login/vk-oauth2">Login with Vk</a></p>
-    {% endif %}
 
     {% if posts %}
+        <H3>Your posts:</H3>
         {% for post in posts %}
-            <p><a href="{{ post.id }}">{{ post.name }}</a></p>
+            <p>{{ post.name }}</p>
             <img class="small_img" src="{{ post.img_large.url }}" alt="img" >
+            <p>Status: {{ post.get_status_display }}</p>
         {% endfor %}
     {% else %}
-        <p>No posts are available.</p>
+        <H3>No posts.</H3>
     {% endif %}
 
 </body>

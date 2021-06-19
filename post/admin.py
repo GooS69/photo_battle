@@ -7,7 +7,8 @@ from .models.like import Like
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'status')
+    list_filter = ('status',)
 
 
 @admin.register(Comment)
