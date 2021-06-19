@@ -6,15 +6,19 @@ from .models.comment import Comment
 
 
 class MainPage(ListView):
-    model = Post
+    queryset = Post.objects.filter(status='v')
     template_name = 'post/index.html'
     context_object_name = 'posts'
 
 
-class DetailPage(DetailView):
+class DetailPage(UserPassesTestMixin, DetailView):
     model = Post
     template_name = 'post/detail.html'
     context_object_name = 'post'
+
+    def test_func(self):
+        post = self.get_object()
+        return post.status == 'v'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -35,8 +39,8 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdatePost(UpdateView):
-    model = Post
-    fields = ['name', 'img_large']
-    template_name = 'post/update_post.html'
-    success_url = reverse_lazy('post:main_page')
+#class UpdatePost(UpdateView):
+#    model = Post
+#    fields = ['name', 'img_large']
+#    template_name = 'post/update_post.html'
+#    success_url = reverse_lazy('post:main_page')
