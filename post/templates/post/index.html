@@ -18,7 +18,7 @@
 
     {% if posts %}
         {% for post in posts %}
-            <p><a href="{{ post.id }}">{{ post.name }}</a></p>
+            <p><a href="{% url 'post:detail_page' post.id %}">{{ post.name }}</a></p>
             <img class="small_img" src="{{ post.img_large.url }}" alt="img" >
         {% endfor %}
     {% else %}

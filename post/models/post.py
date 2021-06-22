@@ -15,6 +15,10 @@ class Post(models.Model):
 
 	status = models.CharField(max_length=1, choices=POST_STATUS, default='n')
 
+	def delete(self, using=None, keep_parents=False):
+		self.img_large.storage.delete(self.img_large.name)
+		super().delete()
+
 	def __str__(self):
 		return self.name
 

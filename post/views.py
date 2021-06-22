@@ -47,9 +47,21 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
 #    success_url = reverse_lazy('post:main_page')
 
 
+class DeletePost(UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'post/delete_post.html'
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('post:user_page', args=[self.request.user.id])
+        return super().get_success_url()
+
+    def test_func(self):
+        return self.request.user == self.get_object().owner
+
+
 class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = User
-    template_name = 'post/user.html'
+    template_name = 'post/user_page.html'
     context_object_name = 'user'
 
     def test_func(self):
