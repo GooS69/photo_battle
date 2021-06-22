@@ -1,9 +1,10 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from .models.post import Post
 from .models.comment import Comment
+from .models.like import Like
 
 
 class MainPage(ListView):
@@ -57,6 +58,17 @@ class DeletePost(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user == self.get_object().owner
+
+
+class CreateLike(RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
+        return super().get_redirect_url(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        Like.objects.create(user=self.request.user, post_id=self.kwargs['pk'])
+        return super().get(request, *args, **kwargs)
 
 
 class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
