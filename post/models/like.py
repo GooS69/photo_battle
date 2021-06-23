@@ -10,6 +10,11 @@ class Like(models.Model):
         self.post.number_of_likes += 1
         self.post.save()
 
+    def delete(self, using=None, keep_parents=False):
+        self.post.number_of_likes -= 1
+        self.post.save()
+        super().delete()
+
     def __str__(self):
         return "like from " + self.user.first_name + " to " + self.post.name
 

@@ -1,5 +1,5 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
-from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, RedirectView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from .models.post import Post
@@ -42,13 +42,6 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-#class UpdatePost(UpdateView):
-#    model = Post
-#    fields = ['name', 'img_large']
-#    template_name = 'post/update_post.html'
-#    success_url = reverse_lazy('post:main_page')
-
-
 class DeletePost(UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'post/delete_post.html'
@@ -61,14 +54,25 @@ class DeletePost(UserPassesTestMixin, DeleteView):
         return self.request.user == self.get_object().owner
 
 
+# temp
 class CreateLike(RedirectView):
-
     def get_redirect_url(self, *args, **kwargs):
         self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
         return super().get_redirect_url(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         Like.objects.create(user=self.request.user, post_id=self.kwargs['pk'])
+        return super().get(request, *args, **kwargs)
+
+
+# temp
+class DeleteLike(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
+        return super().get_redirect_url(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        Like.objects.get(user=self.request.user, post_id=self.kwargs['pk']).delete()
         return super().get(request, *args, **kwargs)
 
 
