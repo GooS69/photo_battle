@@ -6,6 +6,7 @@ class Post(models.Model):
 	name = models.CharField(max_length=255)
 	pub_date = models.DateTimeField(auto_now_add=True)
 	owner = models.ForeignKey('auth.user', on_delete=models.CASCADE, related_name='posts', related_query_name='post')
+	number_of_likes = models.IntegerField(default=0)
 
 	POST_STATUS = (
 		('v', 'Verified'),

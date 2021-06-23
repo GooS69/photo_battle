@@ -11,7 +11,13 @@
 
     <H3>{{ post.name }}</H3>
     <img src="{{ post.img_large.url }}" alt="img" class="main_img">
-    <p><a href="{% url 'post:new_like' post.id %}">Like!</a></p>
+    <p>{{ post.number_of_likes }} Likes!
+        {% if is_user_like_this %}
+            You like it!
+        {% else %}
+            <a href="{% url 'post:new_like' post.id %}">Like it!</a>
+        {% endif %}
+    </p>
     {% if comments %}
     {% for comment in comments %}
         <H5>{{ comment.author.username }}</H5>
