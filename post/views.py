@@ -55,7 +55,10 @@ class DeletePost(UserPassesTestMixin, DeleteView):
 
 
 # temp
-class CreateLike(RedirectView):
+class CreateLike(UserPassesTestMixin, RedirectView):
+    def test_func(self):
+        return not Like.objects.filter(user=self.request.user, post_id=self.kwargs['pk']).exists()
+
     def get_redirect_url(self, *args, **kwargs):
         self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
         return super().get_redirect_url(*args, **kwargs)
@@ -66,7 +69,10 @@ class CreateLike(RedirectView):
 
 
 # temp
-class DeleteLike(RedirectView):
+class DeleteLike(UserPassesTestMixin, RedirectView):
+    def test_func(self):
+        return Like.objects.filter(user=self.request.user, post_id=self.kwargs['pk']).exists()
+
     def get_redirect_url(self, *args, **kwargs):
         self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
         return super().get_redirect_url(*args, **kwargs)
