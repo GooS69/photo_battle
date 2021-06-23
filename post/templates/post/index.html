@@ -19,6 +19,7 @@
     {% if posts %}
         {% for post in posts %}
             <p><a href="{% url 'post:detail_page' post.id %}">{{ post.name }}</a></p>
+            <p>{{ post.number_of_likes }}❤</p>
             <img class="small_img" src="{{ post.img_large.url }}" alt="img" >
         {% endfor %}
     {% else %}
