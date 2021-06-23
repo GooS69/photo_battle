@@ -27,3 +27,4 @@ class Post(models.Model):
 		db_table = "posts"
 		verbose_name = 'Пост'
 		verbose_name_plural = 'Посты'
+		ordering = ['-number_of_likes']

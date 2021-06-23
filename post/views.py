@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from .models.post import Post
 from .models.comment import Comment
@@ -11,6 +12,7 @@ class MainPage(ListView):
     queryset = Post.objects.filter(status='v')
     template_name = 'post/index.html'
     context_object_name = 'posts'
+    paginate_by = 2
 
 
 class DetailPage(UserPassesTestMixin, DetailView):
