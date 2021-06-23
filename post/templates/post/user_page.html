@@ -10,7 +10,7 @@
     <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
 
     <H1>Personal area</H1>
-    <p>Name: {{ user.first_name }} </p>
+    <p>Name: {{ user.first_name }}  <a href={% url 'post:update_user' user.id %}>change</a></p>
     <p><a href="{% url 'post:logout' %}">Logout</a></p>
     <p><a href="{% url 'post:new_post' %}">Create new post</a></p>
 

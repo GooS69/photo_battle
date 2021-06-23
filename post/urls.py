@@ -12,5 +12,6 @@ urlpatterns = [
     path('post/<int:pk>/dislike', views.DeleteLike.as_view(), name='delete_like'),
     path('post/<int:pk>/delete', views.DeletePost.as_view(), name='delete_post'),
     path('user/<int:pk>', views.UserPage.as_view(), name='user_page'),
+    path('user/<int:pk>/update', views.UpdateUser.as_view(), name='update_user'),
     path('logout', LogoutView.as_view(next_page='/'), name='logout'),
                ]

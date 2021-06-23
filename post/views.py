@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, RedirectView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -94,3 +94,16 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'])
         return context
+
+
+class UpdateUser(UserPassesTestMixin, UpdateView):
+    model = User
+    fields = ['first_name']
+    template_name = 'post/update_user.html'
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('post:user_page', args=[self.kwargs['pk']])
+        return super().get_success_url()
+
+    def test_func(self):
+        return self.request.user == self.get_object()
