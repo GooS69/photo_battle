@@ -19,10 +19,7 @@
         {% endif %}
     </p>
     {% if comments %}
-    {% for comment in comments %}
-        <H5>{{ comment.author.username }}</H5>
-        <p>{{ comment.text }}</p>
-    {% endfor %}
+        {% include 'post/components/comment.html' with parent=None %}
     {% endif %}
 </body>
 </html>
