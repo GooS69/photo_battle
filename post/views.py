@@ -26,7 +26,7 @@ class DetailPage(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = Comment.objects.filter(post_id=self.kwargs['pk'])
+        context['comments'] = self.get_object().comments.all()
         context['is_user_like_this'] = Like.objects.filter(user=self.request.user, post_id=self.kwargs['pk']).exists()
         return context
 

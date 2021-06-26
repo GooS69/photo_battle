@@ -1,8 +1,19 @@
+import re
+
 from django.db import models
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 
 
 class Post(models.Model):
-	img_large = models.ImageField(upload_to='img')
+	POST_SAVE_FIELDS = ['img_large']
+
+	@staticmethod
+	def image_path(self, filename):
+		path = re.sub(r'(\d.+)(\d{3})(\d{3})$', r'\1/\2/\3', '{0:09d}'.format(self.id))
+		return f"{self.__class__.__name__.lower()}s/{path}/img_large/{filename}"
+
+	img_large = models.ImageField(upload_to=image_path.__func__)
 	name = models.CharField(max_length=255)
 	pub_date = models.DateTimeField(auto_now_add=True)
 	owner = models.ForeignKey('auth.user', on_delete=models.CASCADE, related_name='posts', related_query_name='post')
@@ -28,3 +39,21 @@ class Post(models.Model):
 		verbose_name = 'Пост'
 		verbose_name_plural = 'Посты'
 		ordering = ['-number_of_likes']
+
+
+@receiver(pre_save, sender=Post)
+def skip_saving_file(sender, instance, **kwargs):
+	if not instance.id:
+		for field in instance.POST_SAVE_FIELDS:
+			if not hasattr(instance, f"post_save_{field}_field"):
+				setattr(instance, f"post_save_{field}_field", getattr(instance, field))
+			setattr(instance, field, None)
+
+
+@receiver(post_save, sender=Post)
+def save_file(sender, instance, created, **kwargs):
+    if created:
+        for field in instance.POST_SAVE_FIELDS:
+            if hasattr(instance, f"post_save_{field}_field"):
+                setattr(instance, field, getattr(instance, f"post_save_{field}_field"))
+        instance.save()
