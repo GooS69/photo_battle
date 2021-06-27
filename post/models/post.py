@@ -1,7 +1,7 @@
 import re
 
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 
 
@@ -27,9 +27,6 @@ class Post(models.Model):
 
 	status = models.CharField(max_length=1, choices=POST_STATUS, default='n')
 
-	def delete(self, using=None, keep_parents=False):
-		self.img_large.storage.delete(self.img_large.name)
-		super().delete()
 
 	def __str__(self):
 		return self.name
@@ -52,8 +49,13 @@ def skip_saving_file(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Post)
 def save_file(sender, instance, created, **kwargs):
-    if created:
-        for field in instance.POST_SAVE_FIELDS:
-            if hasattr(instance, f"post_save_{field}_field"):
-                setattr(instance, field, getattr(instance, f"post_save_{field}_field"))
-        instance.save()
+	if created:
+		for field in instance.POST_SAVE_FIELDS:
+			if hasattr(instance, f"post_save_{field}_field"):
+				setattr(instance, field, getattr(instance, f"post_save_{field}_field"))
+		instance.save()
+
+
+@receiver(post_delete, sender=Post)
+def delete_file(sender, instance, *args, **kwargs):
+	instance.img_large.storage.delete(instance.img_large.name)
