@@ -12,14 +12,26 @@
     <H3>{{ post.name }}</H3>
     <img src="{{ post.img_large.url }}" alt="img" class="main_img">
     <p>{{ post.number_of_likes }} Likes!
-        {% if is_user_like_this %}
-            <a href="{% url 'post:delete_like' post.id %}">Dislike it!</a>
-        {% else %}
-            <a href="{% url 'post:new_like' post.id %}">Like it!</a>
+        {% if user.is_authenticated %}
+            {% if is_user_like_this %}
+                <a href="{% url 'post:delete_like' post.id %}">Dislike it!</a>
+            {% else %}
+                <a href="{% url 'post:new_like' post.id %}">Like it!</a>
+            {% endif %}
         {% endif %}
     </p>
     {% if comments %}
         {% include 'post/components/comment.html' with parent=None %}
+    {% endif %}
+
+    {% if comment_form %}
+        <h5>Add comment</h5>
+            <form action="" method="post" >
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <input type="hidden" name="parent" value="None">
+                <input type="submit" value="comment">
+            </form>
     {% endif %}
 </body>
 </html>
