@@ -3,7 +3,15 @@
 
         <h3>{{ comment.author }}</h3>
         <h4>{{ comment.text }} </h4>
-
+        {% if comment_form %}
+        <h5>Reply</h5>
+            <form action="" method="post" >
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <input type="hidden" name="parent" value="{{ comment.id }}">
+                <input type="submit" value="reply">
+            </form>
+        {% endif %}
         {% if comment.comments %}
             <div style=margin-left:20px >
             {% include 'post/components/comment.html' with parent=comment %}
