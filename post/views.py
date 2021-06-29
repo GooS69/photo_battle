@@ -10,7 +10,6 @@ from .models.like import Like
 
 
 class MainPage(ListView):
-    queryset = Post.objects.filter(status='v')
     template_name = 'post/index.html'
     context_object_name = 'posts'
     paginate_by = 2
@@ -18,6 +17,16 @@ class MainPage(ListView):
     def get_ordering(self):
         self.ordering = self.request.GET.get('sorting', '-number_of_likes')
         return super().get_ordering()
+
+    def get_queryset(self):
+        filter = self.request.GET.get('filter', '')
+        self.queryset = Post.objects.filter(status='v').filter(name__icontains=filter)
+        return super().get_queryset()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=None, **kwargs)
+        context['filter'] = self.request.GET.get('filter', '')
+        return context
 
 
 class DetailPage(View):
