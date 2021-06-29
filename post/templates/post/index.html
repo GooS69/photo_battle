@@ -17,6 +17,11 @@
     {% endif %}
 
     {% if posts %}
+        <form action="" method="get">
+            <p><input name="sorting" type="radio" value="-number_of_likes" checked>Likes</p>
+            <p><input name="sorting" type="radio" value="pub_date">Pub date</p>
+            <input type="submit" value="order">
+        </form>
         {% for post in posts %}
             <p><a href="{% url 'post:detail_page' post.id %}">{{ post.name }}</a></p>
             <p>{{ post.number_of_likes }}❤</p>

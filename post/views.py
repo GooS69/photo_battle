@@ -15,6 +15,10 @@ class MainPage(ListView):
     context_object_name = 'posts'
     paginate_by = 2
 
+    def get_ordering(self):
+        self.ordering = self.request.GET.get('sorting', '-number_of_likes')
+        return super().get_ordering()
+
 
 class DetailPage(View):
 
