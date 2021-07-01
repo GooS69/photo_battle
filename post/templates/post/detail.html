@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
     <H1><a href="{% url 'post:main_page' %}"> <-back </a></H1>
     <H3>{{ post.name }}</H3>
-    <img src="{{ post.img_large.url }}" alt="img" class="main_img">
+    <img src="{{ post.img.url }}" alt="img" class="main_img">
     <p>{{ post.number_of_likes }} Likes!
         {% if user.is_authenticated %}
             {% if is_user_like_this %}

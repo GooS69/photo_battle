@@ -3,6 +3,7 @@ import re
 from django.db import models
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
+from PIL import Image
 
 
 class Post(models.Model):
@@ -11,9 +12,9 @@ class Post(models.Model):
 	@staticmethod
 	def image_path(self, filename):
 		path = re.sub(r'(\d.+)(\d{3})(\d{3})$', r'\1/\2/\3', '{0:09d}'.format(self.id))
-		return f"{self.__class__.__name__.lower()}s/{path}/img_large/{filename}"
+		return f"{self.__class__.__name__.lower()}s/{path}/img/{filename}"
 
-	img_large = models.ImageField(upload_to=image_path.__func__)
+	img = models.ImageField(upload_to=image_path.__func__)
 	name = models.CharField(max_length=255)
 	pub_date = models.DateTimeField(auto_now_add=True)
 	owner = models.ForeignKey('auth.user', on_delete=models.CASCADE, related_name='posts', related_query_name='post')
@@ -21,12 +22,15 @@ class Post(models.Model):
 	number_of_comments = models.IntegerField(default=0)
 
 	POST_STATUS = (
-		('v', 'Verified'),
-		('n', 'Not verified'),
-		('r', 'Rejected'),
+		('verified', 'Verified'),
+		('not_verified', 'Not verified'),
+		('rejected', 'Rejected'),
 	)
 
-	status = models.CharField(max_length=1, choices=POST_STATUS, default='n')
+	status = models.CharField(max_length=255, choices=POST_STATUS, default='not_verified')
+
+	#def make_thumbnails(self):
+
 
 	def __str__(self):
 		return self.name
@@ -54,6 +58,7 @@ def save_file(sender, instance, created, **kwargs):
 			if hasattr(instance, f"post_save_{field}_field"):
 				setattr(instance, field, getattr(instance, f"post_save_{field}_field"))
 		instance.save()
+
 
 
 @receiver(post_delete, sender=Post)

@@ -20,7 +20,7 @@ class MainPage(ListView):
 
     def get_queryset(self):
         filter = self.request.GET.get('filter', '')
-        self.queryset = Post.objects.filter(status='v').filter(name__icontains=filter)
+        self.queryset = Post.objects.filter(status='verified').filter(name__icontains=filter)
         return super().get_queryset()
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -47,7 +47,7 @@ class PostDisplay(UserPassesTestMixin, DetailView):
 
     def test_func(self):
         post = self.get_object()
-        return post.status == 'v'
+        return post.status == 'verified'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
