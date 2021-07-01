@@ -19,7 +19,7 @@
         <H3>Your posts:</H3>
         {% for post in posts %}
             <p>{{ post.name }}</p>
-            <img class="small_img" src="{{ post.img_large.url }}" alt="img" >
+            <img src="{{ post.get_img_small_url }}" alt="img" >
             <p>Status: {{ post.get_status_display }}</p>
             <a href="{% url 'post:delete_post' post.id %}"> delete Post</a>
         {% endfor %}

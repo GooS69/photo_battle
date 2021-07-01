@@ -63,7 +63,7 @@ class CreateNewPost(LoginRequiredMixin, CreateView):
     login_url = '/login/vk-oauth2'
 
     model = Post
-    fields = ['name', 'img_large']
+    fields = ['name', 'img']
     template_name = 'post/new_post.html'
     success_url = reverse_lazy('post:main_page')
 

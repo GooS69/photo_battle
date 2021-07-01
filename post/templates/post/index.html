@@ -29,7 +29,7 @@
         {% for post in posts %}
             <p><a href="{% url 'post:detail_page' post.id %}">{{ post.name }}</a></p>
             <p>{{ post.number_of_likes }}❤ {{ post.number_of_comments }} comments</p>
-            <img class="small_img" src="{{ post.img.url }}" alt="img" >
+            <img class="small_img" src="{{ post.get_img_small_url }}" alt="img" >
         {% endfor %}
     {% else %}
         <p>No posts are available.</p>

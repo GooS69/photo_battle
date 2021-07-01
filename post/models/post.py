@@ -1,13 +1,15 @@
+import os
 import re
 
 from django.db import models
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from PIL import Image
+from django.core.files.storage import default_storage
 
 
 class Post(models.Model):
-	POST_SAVE_FIELDS = ['img_large']
+	POST_SAVE_FIELDS = ['img']
 
 	@staticmethod
 	def image_path(self, filename):
@@ -29,8 +31,23 @@ class Post(models.Model):
 
 	status = models.CharField(max_length=255, choices=POST_STATUS, default='not_verified')
 
-	#def make_thumbnails(self):
+	def make_thumbnails(self):
+		size_large = (800, 600)
+		size_small = (200, 150)
+		with Image.open(self.img.path) as img:
+			file, ext = os.path.splitext(self.img.path)
+			thumbnail_large = img.resize(size_large)
+			thumbnail_large.save(file + '_large' + ext)
+			thumbnail_small = img.resize(size_small)
+			thumbnail_small.save(file + '_small' + ext)
 
+	def get_img_large_url(self):
+		file, ext = os.path.splitext(self.img.url)
+		return f'{file}_large{ext}'
+
+	def get_img_small_url(self):
+		file, ext = os.path.splitext(self.img.url)
+		return f'{file}_small{ext}'
 
 	def __str__(self):
 		return self.name
@@ -58,9 +75,12 @@ def save_file(sender, instance, created, **kwargs):
 			if hasattr(instance, f"post_save_{field}_field"):
 				setattr(instance, field, getattr(instance, f"post_save_{field}_field"))
 		instance.save()
-
+		instance.make_thumbnails()
 
 
 @receiver(post_delete, sender=Post)
 def delete_file(sender, instance, *args, **kwargs):
-	instance.img_large.storage.delete(instance.img_large.name)
+	file, ext = os.path.splitext(instance.img.path)
+	default_storage.delete(file + ext)
+	default_storage.delete(file + '_large' + ext)
+	default_storage.delete(file + '_small' + ext)
