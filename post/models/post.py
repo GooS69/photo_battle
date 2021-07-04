@@ -6,6 +6,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from PIL import Image
 from django.core.files.storage import default_storage
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class Post(models.Model):
@@ -20,6 +21,7 @@ class Post(models.Model):
 	name = models.CharField(max_length=255)
 	pub_date = models.DateTimeField(auto_now_add=True)
 	owner = models.ForeignKey('auth.user', on_delete=models.CASCADE, related_name='posts', related_query_name='post')
+	comments = GenericRelation('Comment', related_query_name='post')
 	number_of_likes = models.IntegerField(default=0)
 	number_of_comments = models.IntegerField(default=0)
 

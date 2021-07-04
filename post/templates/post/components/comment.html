@@ -1,5 +1,4 @@
-{% for comment in comments %}
-    {% if comment.parent == parent %}
+{% for comment in parent.comments.all %}
 
         <h3>{{ comment.author }}</h3>
         <h4>{{ comment.text }} </h4>
@@ -8,15 +7,15 @@
             <form action="" method="post" >
                 {% csrf_token %}
                 {{ comment_form.as_p }}
-                <input type="hidden" name="parent" value="{{ comment.id }}">
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <input type="hidden" name="parent_type" value="comment">
                 <input type="submit" value="reply">
             </form>
         {% endif %}
-        {% if comment.comments %}
-            <div style=margin-left:20px >
+        {% if comment.comments.all %}
+            <div style=margin-left:40px >
             {% include 'post/components/comment.html' with parent=comment %}
             </div>
         {% endif %}
 
-    {% endif %}
 {% endfor %}

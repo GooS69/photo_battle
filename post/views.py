@@ -52,7 +52,7 @@ class PostDisplay(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = self.get_object().comments.all()
+        #context['comments'] = self.get_object().comments.all()
         if self.request.user.is_authenticated:
             context['is_user_like_this'] = Like.objects.filter(user=self.request.user,
                                                                post_id=self.kwargs['pk']).exists()
@@ -122,9 +122,11 @@ class CreateComment(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        form.instance.post = Post.objects.get(id=self.kwargs['pk'])
-        if self.request.POST.get('parent'):
-            form.instance.parent = Comment.objects.get(id=int(self.request.POST['parent']))
+        if self.request.POST.get('parent_type') == 'post':
+            form.instance.content_object = Post.objects.get(pk=self.request.POST.get('parent_id'))
+        elif self.request.POST.get('parent_type') == 'comment':
+            form.instance.content_object = Comment.objects.get(pk=self.request.POST.get('parent_id'))
+
         form.save()
         return super().form_valid(form)
 

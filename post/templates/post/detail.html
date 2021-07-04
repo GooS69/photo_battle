@@ -20,8 +20,8 @@
             {% endif %}
         {% endif %}
     </p>
-    {% if comments %}
-        {% include 'post/components/comment.html' with parent=None %}
+    {% if post.comments %}
+        {% include 'post/components/comment.html' with parent=post %}
     {% endif %}
 
     {% if comment_form %}
@@ -29,8 +29,9 @@
             <form action="" method="post" >
                 {% csrf_token %}
                 {{ comment_form.as_p }}
-                <input type="hidden" name="parent" value="">
-                <input type="submit" value="comment">
+                <input type="hidden" name="parent_id" value="{{ post.id }}">
+                <input type="hidden" name="parent_type" value="post">
+                <input type="submit" value="comment" >
             </form>
     {% endif %}
 </body>

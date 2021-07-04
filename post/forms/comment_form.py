@@ -5,5 +5,7 @@ from ..models.comment import Comment
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ['text', 'parent']
-        widgets = {'parent': HiddenInput}
+        fields = ['text', ]
+        widgets = {'parent_id': HiddenInput,
+                   'parent_type': HiddenInput
+                   }
