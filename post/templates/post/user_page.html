@@ -13,10 +13,15 @@
     <p>Name: {{ user.first_name }}  <a href={% url 'post:update_user' user.id %}>change</a></p>
     <p><a href="{% url 'post:logout' %}">Logout</a></p>
     <p><a href="{% url 'post:new_post' %}">Create new post</a></p>
+    <p>
+        <a href="{% url 'post:user_page' user.id %}?status=verified">Verified&nbsp;  </a>
+        <a href="{% url 'post:user_page' user.id %}?status=not_verified">Not verified&nbsp;  </a>
+        <a href="{% url 'post:user_page' user.id %}?status=rejected">Rejected&nbsp;  </a>
+    </p>
 
 
     {% if posts %}
-        <H3>Your posts:</H3>
+        <H3>Your {{ posts.0.status }} posts:</H3>
         {% for post in posts %}
             <p>{{ post.name }}</p>
             <img src="{{ post.get_img_small_url }}" alt="img" >

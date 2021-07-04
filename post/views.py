@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from .forms.comment_form import CommentForm
 from django.urls import reverse_lazy
+from django.utils.html import escape
 from .models.post import Post
 from .models.comment import Comment
 from .models.like import Like
@@ -15,11 +16,11 @@ class MainPage(ListView):
     paginate_by = 2
 
     def get_ordering(self):
-        self.ordering = self.request.GET.get('sorting', '-number_of_likes')
+        self.ordering = escape(self.request.GET.get('sorting', '-number_of_likes'))
         return super().get_ordering()
 
     def get_queryset(self):
-        filter = self.request.GET.get('filter', '')
+        filter = escape(self.request.GET.get('filter', ''))
         self.queryset = Post.objects.filter(status='verified').filter(name__icontains=filter)
         return super().get_queryset()
 
@@ -138,7 +139,8 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'])
+        status = escape(self.request.GET.get('status', 'None'))
+        context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'], status=status)
         return context
 
 
