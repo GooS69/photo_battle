@@ -13,7 +13,7 @@ from .models.like import Like
 class MainPage(ListView):
     template_name = 'post/index.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 10
 
     def get_ordering(self):
         self.ordering = escape(self.request.GET.get('sorting', '-number_of_likes'))

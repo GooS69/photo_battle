@@ -35,7 +35,7 @@ class Post(models.Model):
 
 	def make_thumbnails(self):
 		size_large = (800, 600)
-		size_small = (200, 150)
+		size_small = (250, 200)
 		with Image.open(self.img.path) as img:
 			file, ext = os.path.splitext(self.img.path)
 			thumbnail_large = img.resize(size_large)
