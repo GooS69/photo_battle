@@ -1,36 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    {% load static %}
+{% extends 'post/base.html' %}
 
-    <link class="main_img" rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}">
+{% block content %}
+{% load static %}
 
-    <H1>Personal area</H1>
-    <p>Name: {{ user.first_name }}  <a href={% url 'post:update_user' user.id %}>change</a></p>
-    <p><a href="{% url 'post:logout' %}">Logout</a></p>
-    <p><a href="{% url 'post:new_post' %}">Create new post</a></p>
-    <p>
-        <a href="{% url 'post:user_page' user.id %}?status=verified">Verified&nbsp;  </a>
-        <a href="{% url 'post:user_page' user.id %}?status=not_verified">Not verified&nbsp;  </a>
-        <a href="{% url 'post:user_page' user.id %}?status=rejected">Rejected&nbsp;  </a>
-    </p>
+    <div class="album py-2 bg-light">
+        <div class="container">
+            <div class="row row-cols-2 py-3">
+                <div class="col ">
+                    <p>
+                        <span class="h2">{{ user.first_name }}</span>
+                        <a class="btn btn-secondary" role="button" href={% url 'post:update_user' user.id %}>change name</a>
+                        <a href="{% url 'post:logout' %}">Logout</a>
+                        <p><a class="btn btn-primary" href="{% url 'post:new_post' %}" role="button">Create new post</a></p>
+                    </p>
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+            <div class="row row-cols-3 py-3">
+                <p><a href="{% url 'post:user_page' user.id %}?status=verified">Verified posts</a></p>
+                <p><a href="{% url 'post:user_page' user.id %}?status=not_verified">Not verified posts</a></p>
+                <p><a href="{% url 'post:user_page' user.id %}?status=rejected">Rejected posts</a></p>
+            </div>
+            {% if posts %}
+            <div class="row row-cols2">
+                <H3>Your {{ posts.0.status }} posts:</H3>
+            </div>
+            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+                {% for post in posts %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <a href="{% url 'post:detail_page' post.id %}" >
+                            <img src="{{ post.get_img_small_url }}" class="img-fluid mx-auto" alt="img" >
+                        </a>
+                            <div class="card-body">
+                                <p class="card-text">{{ post.name }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'post:delete_post' post.id %}"> delete Post</a>
+                                    <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+                <p>No posts are available.</p>
+            {% endif %}
 
 
-    {% if posts %}
-        <H3>Your {{ posts.0.status }} posts:</H3>
-        {% for post in posts %}
-            <p>{{ post.name }}</p>
-            <img src="{{ post.get_img_small_url }}" alt="img" >
-            <p>Status: {{ post.get_status_display }}</p>
-            <a href="{% url 'post:delete_post' post.id %}"> delete Post</a>
-        {% endfor %}
-    {% else %}
-        <H3>No posts.</H3>
-    {% endif %}
 
-</body>
-</html>
+
+        </div>
+    </div>
+
+
+{% endblock %}
