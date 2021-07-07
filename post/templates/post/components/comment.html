@@ -1,4 +1,5 @@
 {% for comment in parent.comments.all %}
+    <div class="row">
 
         <h3>{{ comment.author }}</h3>
         <h4>{{ comment.text }} </h4>
@@ -12,10 +13,10 @@
                 <input type="submit" value="reply">
             </form>
         {% endif %}
+
+    </div >
         {% if comment.comments.all %}
-            <div style=margin-left:40px >
             {% include 'post/components/comment.html' with parent=comment %}
-            </div>
         {% endif %}
 
 {% endfor %}

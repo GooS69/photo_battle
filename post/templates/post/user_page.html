@@ -18,10 +18,16 @@
 
                 </div>
             </div>
-            <div class="row row-cols-3 py-3">
-                <p><a href="{% url 'post:user_page' user.id %}?status=verified">Verified posts</a></p>
-                <p><a href="{% url 'post:user_page' user.id %}?status=not_verified">Not verified posts</a></p>
-                <p><a href="{% url 'post:user_page' user.id %}?status=rejected">Rejected posts</a></p>
+            <div class="row row-cols-1 row-cols-sm-3 py-3">
+                <div class="col">
+                    <p class="text-center"><a href="{% url 'post:user_page' user.id %}?status=verified">Verified posts</a></p>
+                </div>
+                <div class="col">
+                    <p class="text-center"><a href="{% url 'post:user_page' user.id %}?status=not_verified">Not verified posts</a></p>
+                </div>
+                <div class="col">
+                    <p class="text-center"><a href="{% url 'post:user_page' user.id %}?status=rejected">Rejected posts</a></p>
+                </div>
             </div>
             {% if posts %}
             <div class="row row-cols2">
@@ -37,7 +43,7 @@
                             <div class="card-body">
                                 <p class="card-text">{{ post.name }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <a href="{% url 'post:delete_post' post.id %}"> delete Post</a>
+                                    <a class="btn btn-danger btn-sm" role="button" href="{% url 'post:delete_post' post.id %}">delete Post</a>
                                     <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
                                 </div>
                             </div>

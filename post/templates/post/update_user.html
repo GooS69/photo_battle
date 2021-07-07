@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <H1>Update name</H1>
-    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Change">
-    </form>
-</body>
-</html>
+{% extends 'post/base.html' %}
+{% block content %}
+
+    <div class="album py-2 bg-light">
+        <div class="container">
+            <H1>Update name</H1>
+            <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Change">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

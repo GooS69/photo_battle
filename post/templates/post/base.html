@@ -17,7 +17,9 @@
                 <strong>Photo Battle</strong>
             </a>
             {% if user.is_authenticated %}
-                <a href="{% url 'post:user_page' user.id %}">Hi {{ user.first_name }}</a>
+                <div>
+                <span class="text-white">Hi </span><a href="{% url 'post:user_page' user.id %}">{{ user.first_name }}</a>
+                </div>
             {% else %}
                 <a href="/login/vk-oauth2">Login with Vk</a>
             {% endif %}
