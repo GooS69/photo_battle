@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models.comment import Comment
-from .models.post import Post
-from .models.like import Like
+from .my_models.comment import Comment
+from .my_models.post import Post
+from .my_models.like import Like
 
 
 @admin.action(description='Mark selected as verified')

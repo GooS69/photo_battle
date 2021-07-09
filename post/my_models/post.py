@@ -11,16 +11,27 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 class Post(models.Model):
 	POST_SAVE_FIELDS = ['img']
+	VERSION_DESCRIPTIONS = {
+		'large': {
+			'width': 200,
+			'height': 100
+		},
+		'small': {
+			'width': 200,
+			'height': 100
+		}
+	}
 
 	@staticmethod
 	def image_path(self, filename):
 		path = re.sub(r'(\d.+)(\d{3})(\d{3})$', r'\1/\2/\3', '{0:09d}'.format(self.id))
 		return f"{self.__class__.__name__.lower()}s/{path}/img/{filename}"
 
+	#versions=['large', 'small']
 	img = models.ImageField(upload_to=image_path.__func__)
 	name = models.CharField(max_length=255)
 	pub_date = models.DateTimeField(auto_now_add=True)
-	owner = models.ForeignKey('auth.user', on_delete=models.CASCADE, related_name='posts', related_query_name='post')
+	owner = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='posts', related_query_name='post')
 	comments = GenericRelation('Comment', related_query_name='post')
 	number_of_likes = models.IntegerField(default=0)
 	number_of_comments = models.IntegerField(default=0)

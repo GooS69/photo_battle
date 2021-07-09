@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from ..models.comment import Comment
+from ..my_models.comment import Comment
 
 
 class CommentForm(ModelForm):

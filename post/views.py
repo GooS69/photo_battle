@@ -1,13 +1,14 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView, View
 from django.views.generic.edit import FormMixin, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from .forms.comment_form import CommentForm
 from django.urls import reverse_lazy
 from django.utils.html import escape
-from .models.post import Post
-from .models.comment import Comment
-from .models.like import Like
+
+from .models import CustomUser
+from .my_models.post import Post
+from .my_models.comment import Comment
+from .my_models.like import Like
 
 
 class MainPage(ListView):
@@ -132,7 +133,7 @@ class CreateComment(LoginRequiredMixin, FormView):
 
 
 class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    model = User
+    model = CustomUser
     template_name = 'post/user_page.html'
     context_object_name = 'user'
 
@@ -147,7 +148,7 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 
 class UpdateUser(UserPassesTestMixin, UpdateView):
-    model = User
+    model = CustomUser
     fields = ['first_name']
     template_name = 'post/update_user.html'
 

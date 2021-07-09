@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 
 class Like(models.Model):
-    user = models.ForeignKey('auth.user', related_name='likes', related_query_name='like', on_delete=models.CASCADE)
+    user = models.ForeignKey('CustomUser', related_name='likes', related_query_name='like', on_delete=models.CASCADE)
     post = models.ForeignKey('Post', related_name='likes', related_query_name='like', on_delete=models.CASCADE)
 
 
