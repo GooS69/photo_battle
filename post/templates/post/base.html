@@ -18,7 +18,10 @@
             </a>
             {% if user.is_authenticated %}
                 <div>
-                <span class="text-white">Hi </span><a href="{% url 'post:user_page' user.id %}">{{ user.first_name }}</a>
+                <span class="text-white">Hi </span>
+                    <a href="{% url 'post:user_page' user.id %}">{{ user.first_name }}{% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="avatar" width="30" height="30">{% endif %}</a>
+
                 </div>
             {% else %}
                 <a href="/login/vk-oauth2">Login with Vk</a>

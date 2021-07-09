@@ -5,6 +5,7 @@ from .forms.comment_form import CommentForm
 from django.urls import reverse_lazy
 from django.utils.html import escape
 
+from .forms.custom_user_form import CustomUserForm
 from .models import CustomUser
 from .my_models.post import Post
 from .my_models.comment import Comment
@@ -149,7 +150,7 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 class UpdateUser(UserPassesTestMixin, UpdateView):
     model = CustomUser
-    fields = ['first_name']
+    form_class = CustomUserForm
     template_name = 'post/update_user.html'
 
     def get_success_url(self):
