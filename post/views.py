@@ -1,10 +1,10 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView, View
-from django.views.generic.edit import FormMixin, FormView
+from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms.comment_form import CommentForm
 from django.urls import reverse_lazy
 from django.utils.html import escape
-
+from django.http import HttpResponse
 from .forms.custom_user_form import CustomUserForm
 from .models import CustomUser
 from .my_models.post import Post
@@ -88,31 +88,23 @@ class DeletePost(UserPassesTestMixin, DeleteView):
 
 
 # temp
-class CreateLike(UserPassesTestMixin, RedirectView):
+class CreateLike(View, UserPassesTestMixin):
     def test_func(self):
         return not Like.objects.filter(user=self.request.user, post_id=self.kwargs['pk']).exists()
 
-    def get_redirect_url(self, *args, **kwargs):
-        self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
-        return super().get_redirect_url(*args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         Like.objects.create(user=self.request.user, post_id=self.kwargs['pk'])
-        return super().get(request, *args, **kwargs)
+        return HttpResponse(status=200)
 
 
 # temp
-class DeleteLike(UserPassesTestMixin, RedirectView):
+class DeleteLike(View, UserPassesTestMixin):
     def test_func(self):
         return Like.objects.filter(user=self.request.user, post_id=self.kwargs['pk']).exists()
 
-    def get_redirect_url(self, *args, **kwargs):
-        self.url = reverse_lazy('post:detail_page', args=[self.kwargs['pk']])
-        return super().get_redirect_url(*args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         Like.objects.get(user=self.request.user, post_id=self.kwargs['pk']).delete()
-        return super().get(request, *args, **kwargs)
+        return HttpResponse(status=200)
 
 
 class CreateComment(LoginRequiredMixin, FormView):

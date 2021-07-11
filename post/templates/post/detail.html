@@ -8,13 +8,15 @@
                 <div class="col col-lg-10 text-center">
                     <H1>{{ post.name }}</H1>
                     <img class="img-fluid " src="{{ post.get_img_large_url }}" alt="img">
-                    <p>{{ post.number_of_likes }} Likes!
+                    <p><span id="numberOfLikes">{{ post.number_of_likes }}</span> Likes!
                         {% if user.is_authenticated %}
-                            {% if is_user_like_this %}
-                                <a href="{% url 'post:delete_like' post.id %}">Dislike it!</a>
-                            {% else %}
-                                <a href="{% url 'post:new_like' post.id %}">Like it!</a>
-                            {% endif %}
+                                <button id="like" type="button" class="btn btn-primary" onclick="setLike()">
+                                    {% if is_user_like_this %}
+                                        Dislike it!
+                                    {% else %}
+                                        Like it!
+                                    {% endif %}
+                                </button>
                         {% endif %}
                     </p>
                 </div>
@@ -46,4 +48,39 @@
 
         </div>
     </div>
+
+    <script>
+
+        let is_user_like_this = {% if is_user_like_this %}true{% else %}false{% endif %}
+
+        let likeElement = document.getElementById('like')
+        let numberOfLikesElement = document.getElementById('numberOfLikes')
+
+        async function setLike() {
+            let response
+            if (is_user_like_this) {
+                response = await fetch("{% url 'post:delete_like' post.id %}");
+                if (response.ok) {
+                    is_user_like_this = false
+                    numberOfLikesElement.innerText = Number(numberOfLikesElement.innerText) - 1
+                    likeElement.innerText = "Like it!"
+                } else {
+                    alert("no")
+                }
+            } else {
+                response = await fetch("{% url 'post:new_like' post.id %}");
+                if (response.ok) {
+                    is_user_like_this = true
+                    numberOfLikesElement.innerText = Number(numberOfLikesElement.innerText) + 1
+                    likeElement.innerText = "Dislike it!"
+                } else {
+                    alert("no")
+                }
+            }
+        }
+
+
+
+
+    </script>
 {% endblock %}
