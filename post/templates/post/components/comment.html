@@ -14,9 +14,10 @@
             </form>
         {% endif %}
 
-    </div >
+    </div>
+    <div class="ps-5">
         {% if comment.comments.all %}
             {% include 'post/components/comment.html' with parent=comment %}
         {% endif %}
-
+    </div>
 {% endfor %}
