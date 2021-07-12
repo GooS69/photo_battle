@@ -11,7 +11,11 @@
                         <span class="h2">{{ user.first_name }}</span>
                         <a class="btn btn-secondary" role="button" href={% url 'post:update_user' user.id %}>change name</a>
                         <a href="{% url 'post:logout' %}">Logout</a>
-                        <p><a class="btn btn-primary" href="{% url 'post:new_post' %}" role="button">Create new post</a></p>
+                    </p>
+                    <p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Create new post
+                        </button>
                     </p>
                 </div>
                 <div class="col">
@@ -51,16 +55,45 @@
                 </div>
                 {% endfor %}
             </div>
-
             {% else %}
                 <p>No posts are available.</p>
             {% endif %}
-
-
-
-
         </div>
     </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create new post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newPostForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        {{ form.as_p }}
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-primary" onclick="newPost()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let formElem = document.getElementById("newPostForm")
+
+        async function newPost(){
+            let response = await fetch("{% url 'post:new_post' %}", {
+                method: 'POST',
+                body: new FormData(formElem)
+            })
+            if(response.ok){
+                alert('ok')
+            }
+        }
+    </script>
+
 
 
 {% endblock %}

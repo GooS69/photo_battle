@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.html import escape
 from django.views.generic import DetailView
 
+from post.forms.new_post_form import NewPostForm
 from post.my_models.custom_user import CustomUser
 from post.my_models.post import Post
 
@@ -18,4 +19,5 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(**kwargs)
         status = escape(self.request.GET.get('status', 'None'))
         context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'], status=status)
+        context['form'] = NewPostForm
         return context

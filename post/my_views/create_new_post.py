@@ -1,17 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from post.my_models.post import Post
+from django.http import HttpResponse
+from django.views.generic.edit import FormMixin, ProcessFormView
+
+from post.forms.new_post_form import NewPostForm
 
 
-class CreateNewPost(LoginRequiredMixin, CreateView):
+class CreateNewPost(FormMixin, LoginRequiredMixin, ProcessFormView):
     login_url = '/login/vk-oauth2'
-
-    model = Post
-    fields = ['name', 'img']
-    template_name = 'post/new_post.html'
-    success_url = reverse_lazy('post:main_page')
+    form_class = NewPostForm
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        return super().form_valid(form)
+        form.save()
+        return HttpResponse(status=200)
