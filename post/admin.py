@@ -32,5 +32,3 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
     pass
-
-

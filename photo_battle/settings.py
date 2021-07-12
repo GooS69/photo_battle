@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
-    #'post.apps.PostConfig',
     'post',
 ]
 
@@ -65,8 +64,7 @@ ROOT_URLCONF = 'photo_battle.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,7 +85,7 @@ WSGI_APPLICATION = 'photo_battle.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=500,default=config('DATABASE_URL'))
+    'default': dj_database_url.config(conn_max_age=500, default=config('DATABASE_URL'))
 }
 
 
@@ -195,7 +193,7 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django.db.backends':{
+        'django.db.backends': {
             'level': 'DEBUG',
             'handlers': ['console', 'file']
         }

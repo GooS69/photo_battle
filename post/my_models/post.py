@@ -27,7 +27,7 @@ class Post(models.Model):
 		path = re.sub(r'(\d.+)(\d{3})(\d{3})$', r'\1/\2/\3', '{0:09d}'.format(self.id))
 		return f"{self.__class__.__name__.lower()}s/{path}/img/{filename}"
 
-	#versions=['large', 'small']
+	# versions=['large', 'small']
 	img = models.ImageField(upload_to=image_path.__func__)
 	name = models.CharField(max_length=255)
 	pub_date = models.DateTimeField(auto_now_add=True)

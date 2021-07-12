@@ -10,8 +10,9 @@ class Comment(models.Model):
 	text = models.TextField()
 	author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='comments', related_query_name='comment')
 
-	#post = my_models.ForeignKey('Post', on_delete=my_models.CASCADE, related_name='comments', related_query_name='comment')
-	#parent = my_models.ForeignKey('self', on_delete=my_models.CASCADE, null=True, default=None, blank=True, related_name='comments', related_query_name='comment')
+	# post = my_models.ForeignKey('Post', on_delete=my_models.CASCADE, related_name='comments',
+	# related_query_name='comment') parent = my_models.ForeignKey('self', on_delete=my_models.CASCADE, null=True,
+	# default=None, blank=True, related_name='comments', related_query_name='comment')
 
 	comments = GenericRelation('self', related_query_name='parent')
 

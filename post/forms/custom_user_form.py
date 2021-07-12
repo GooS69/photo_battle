@@ -10,4 +10,3 @@ class CustomUserForm(ModelForm):
     class Meta:
         model = CustomUser
         fields = ['first_name', 'avatar']
-
