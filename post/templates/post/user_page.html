@@ -10,7 +10,7 @@
                     <p>
                         <span class="h2">{{ user.first_name }}</span>
                         <a class="btn btn-secondary" role="button" href={% url 'post:update_user' user.id %}>change name</a>
-                        <a href="{% url 'post:logout' %}">Logout</a>
+
                     </p>
                     <p>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPostModal">
