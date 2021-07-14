@@ -40,14 +40,14 @@
             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
                 {% for post in posts %}
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div id="post{{ post.id }}" class="card shadow-sm">
                         <a href="{% url 'post:detail_page' post.id %}" >
                             <img src="{{ post.get_img_small_url }}" class="img-fluid mx-auto" alt="img" >
                         </a>
                             <div class="card-body">
                                 <p class="card-text">{{ post.name }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <a class="btn btn-danger btn-sm" role="button" href="{% url 'post:delete_post' post.id %}">delete Post</a>
+                                    <button id="like" type="button" class="btn btn-danger btn-sm" onclick="deletePost('{% url 'post:delete_post' post.id %}', {{ post.id }})">delete Post</button>
                                     <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
                                 </div>
                             </div>
@@ -85,6 +85,24 @@
         let createPostModal = document.getElementById('createPostModal')
         let formElem = document.getElementById("newPostForm")
 
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
         async function newPost(){
             let response = await fetch("{% url 'post:new_post' %}", {
                 method: 'POST',
@@ -97,6 +115,18 @@
                 alert("Post not created. Check your data")
             }
         }
+
+
+        async function deletePost(url, postId){
+            let response = await fetch(String(url), {
+                method: 'POST',
+                headers: { "X-CSRFToken": csrftoken },
+            })
+            if(response.ok){
+                document.getElementById("post" + String(postId)).remove()
+            }
+        }
+
     </script>
 
 
