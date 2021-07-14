@@ -13,7 +13,7 @@
                         <a href="{% url 'post:logout' %}">Logout</a>
                     </p>
                     <p>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPostModal">
                             Create new post
                         </button>
                     </p>
@@ -61,11 +61,11 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create new post</h5>
+                    <h5 class="modal-title" id="createPostModalLabel">Create new post</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -74,13 +74,15 @@
                     </form>
                 </div>
                 <div class="modal-footer justify-content-end">
-                    <button type="button" class="btn btn-primary" onclick="newPost()">Save changes</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="newPost()">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+
+        let createPostModal = document.getElementById('createPostModal')
         let formElem = document.getElementById("newPostForm")
 
         async function newPost(){
@@ -89,7 +91,10 @@
                 body: new FormData(formElem)
             })
             if(response.ok){
-                alert('ok')
+                alert("Post created")
+                createPostModal.hide()
+            }else {
+                alert("Post not created. Check your data")
             }
         }
     </script>
