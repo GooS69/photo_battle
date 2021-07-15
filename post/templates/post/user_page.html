@@ -39,8 +39,8 @@
             </div>
             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
                 {% for post in posts %}
-                <div class="col">
-                    <div id="post{{ post.id }}" class="card shadow-sm">
+                <div id="post{{ post.id }}" class="col">
+                    <div class="card shadow-sm">
                         <a href="{% url 'post:detail_page' post.id %}" >
                             <img src="{{ post.get_img_small_url }}" class="img-fluid mx-auto" alt="img" >
                         </a>
