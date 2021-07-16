@@ -26,42 +26,19 @@
 
                 </div>
             </div>
-            <div class="row row-cols-1 row-cols-sm-3 py-3">
-                <div class="col">
-                    <p class="text-center"><a href="{% url 'post:user_page' user.id %}?status=verified">Verified posts</a></p>
-                </div>
-                <div class="col">
-                    <p class="text-center"><a href="{% url 'post:user_page' user.id %}?status=not_verified">Not verified posts</a></p>
-                </div>
-                <div class="col">
-                    <p class="text-center"><a href="{% url 'post:user_page' user.id %}?status=rejected">Rejected posts</a></p>
-                </div>
-            </div>
-            {% if posts %}
-            <div class="row row-cols2">
-                <H3>Your {{ posts.0.status }} posts:</H3>
-            </div>
-            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
-                {% for post in posts %}
-                <div id="post{{ post.id }}" class="col">
-                    <div class="card shadow-sm">
-                        <a href="{% url 'post:detail_page' post.id %}" >
-                            <img src="{{ post.get_img_small_url }}" class="img-fluid mx-auto" alt="img" >
-                        </a>
-                            <div class="card-body">
-                                <p class="card-text">{{ post.name }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button id="like" type="button" class="btn btn-danger btn-sm" onclick="deletePost('{% url 'post:delete_post' post.id %}', {{ post.id }})">delete Post</button>
-                                    <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-                <p>No posts are available.</p>
-            {% endif %}
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                See your posts
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "verified" %}')">Verified</a></li>
+                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "not_verified" %}')">Not verified</a></li>
+                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "rejected" %}')">Rejected</a></li>
+            </ul>
+
+        <div id="postsElem">
+
+        </div>
+
         </div>
     </div>
 
@@ -195,6 +172,15 @@
             if(response.ok){
                 let result = await response.json();
                 document.getElementById("avatarElem").src = result.avatar
+            }
+        }
+
+
+        async function getPosts(url){
+            let response = await fetch(String(url))
+            if (response.ok){
+                let result = await response.text()
+                document.getElementById("postsElem").innerHTML = result
             }
         }
 
