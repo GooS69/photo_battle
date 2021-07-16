@@ -12,7 +12,9 @@
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#updateNameModal">
                             Change name
                         </button>
-
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">
+                            Change avatar
+                        </button>
                     </p>
                     <p>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPostModal">
@@ -101,11 +103,33 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-labelledby="updateAvatarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateAvatarModalLabel">Change Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateAvatarForm" enctype="multipart/form-data">{% csrf_token %}
+                        {{ updateAvatarForm.as_p }}
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateAvatar()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
 
         let createPostModal = document.getElementById('createPostModal')
         let newPostFormElem = document.getElementById("newPostForm")
         let updateNameFormElem = document.getElementById("updateNameForm")
+        let updateAvatarFormElem = document.getElementById("updateAvatarForm")
 
         function getCookie(name) {
             let cookieValue = null;
@@ -160,7 +184,18 @@
                 document.getElementById("nameElem").innerText = result.first_name
                 document.getElementById("nameWrapperElem").innerText = result.first_name
             }
+        }
 
+
+        async function updateAvatar() {
+            let  response = await fetch("{% url "post:change_user_avatar" user.id %}",{
+                method: "POST",
+                body: new FormData(updateAvatarFormElem)
+            })
+            if(response.ok){
+                let result = await response.json();
+                document.getElementById("avatarElem").src = result.avatar
+            }
         }
 
     </script>

@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.html import escape
 from django.views.generic import DetailView
 
+from post.forms.custom_user_avatar_form import CustomUserAvatarForm
 from post.forms.custom_user_name_form import CustomUserNameForm
 from post.forms.new_post_form import NewPostForm
 from post.my_models.custom_user import CustomUser
@@ -22,4 +23,5 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'], status=status)
         context['newPostForm'] = NewPostForm
         context['updateNameForm'] = CustomUserNameForm
+        context['updateAvatarForm'] = CustomUserAvatarForm
         return context

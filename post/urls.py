@@ -13,6 +13,6 @@ urlpatterns = [
     path('post/<int:pk>/delete', views.DeletePost.as_view(), name='delete_post'),
     path('user/<int:pk>', views.UserPage.as_view(), name='user_page'),
     path('user/<int:pk>/change_name', views.UpdateUserName.as_view(), name='change_user_name'),
-    #path('user/<int:pk>/change_avatar', views..as_view(), name='change_user_avatar'),
+    path('user/<int:pk>/change_avatar', views.UpdateUserAvatar.as_view(), name='change_user_avatar'),
     path('logout', LogoutView.as_view(next_page='/'), name='logout'),
                ]
