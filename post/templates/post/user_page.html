@@ -8,8 +8,10 @@
             <div class="row row-cols-2 py-3">
                 <div class="col ">
                     <p>
-                        <span class="h2">{{ user.first_name }}</span>
-                        <a class="btn btn-secondary" role="button" href={% url 'post:update_user' user.id %}>change name</a>
+                        <span id="nameElem" class="h2">{{ user.first_name }}</span>
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#updateNameModal">
+                            Change name
+                        </button>
 
                     </p>
                     <p>
@@ -70,7 +72,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="newPostForm" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-                        {{ form.as_p }}
+                        {{ newPostForm.as_p }}
                     </form>
                 </div>
                 <div class="modal-footer justify-content-end">
@@ -80,10 +82,30 @@
         </div>
     </div>
 
+    <div class="modal fade" id="updateNameModal" tabindex="-1" aria-labelledby="updateNameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateNameModalLabel">Change Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateNameForm" enctype="multipart/form-data">{% csrf_token %}
+                        {{ updateNameForm.as_p }}
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateName()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
 
         let createPostModal = document.getElementById('createPostModal')
-        let formElem = document.getElementById("newPostForm")
+        let newPostFormElem = document.getElementById("newPostForm")
+        let updateNameFormElem = document.getElementById("updateNameForm")
 
         function getCookie(name) {
             let cookieValue = null;
@@ -106,7 +128,7 @@
         async function newPost(){
             let response = await fetch("{% url 'post:new_post' %}", {
                 method: 'POST',
-                body: new FormData(formElem)
+                body: new FormData(newPostFormElem)
             })
             if(response.ok){
                 alert("Post created")
@@ -125,6 +147,20 @@
             if(response.ok){
                 document.getElementById("post" + String(postId)).remove()
             }
+        }
+
+
+        async function updateName(){
+            let response = await fetch("{% url 'post:change_user_name' user.id %}",{
+                method: 'POST',
+                body: new FormData(updateNameFormElem)
+            })
+            if (response.ok){
+                let result = await response.json();
+                document.getElementById("nameElem").innerText = result.first_name
+                document.getElementById("nameWrapperElem").innerText = result.first_name
+            }
+
         }
 
     </script>

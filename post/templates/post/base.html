@@ -19,7 +19,7 @@
             {% if user.is_authenticated %}
                 <div>
                 <span class="text-white">Hi </span>
-                    <a href="{% url 'post:user_page' user.id %}">{{ user.first_name }}
+                    <a href="{% url 'post:user_page' user.id %}"><span id="nameWrapperElem">{{ user.first_name }}</span>
                         {% if user.avatar %}
                         <img class="rounded-circle"src="{{ user.avatar.url }}" alt="avatar" width="30" height="30">
                         {% else %}

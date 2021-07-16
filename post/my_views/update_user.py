@@ -1,19 +1,22 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.views.generic import UpdateView
+from django.http import HttpResponse, JsonResponse
 
-from post.forms.custom_user_form import CustomUserForm
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import ProcessFormView, FormMixin
+
+from post.forms.custom_user_name_form import CustomUserNameForm
 from post.my_models.custom_user import CustomUser
 
 
-class UpdateUser(UserPassesTestMixin, UpdateView):
+class UpdateUserName(UserPassesTestMixin, SingleObjectMixin, FormMixin, ProcessFormView):
     model = CustomUser
-    form_class = CustomUserForm
-    template_name = 'post/update_user.html'
+    form_class = CustomUserNameForm
 
-    def get_success_url(self):
-        self.success_url = reverse_lazy('post:user_page', args=[self.kwargs['pk']])
-        return super().get_success_url()
+    def form_valid(self, form):
+        object = self.get_object()
+        object.first_name = form.cleaned_data['first_name']
+        object.save()
+        return JsonResponse({'first_name': str(object.first_name)})
 
     def test_func(self):
         return self.request.user == self.get_object()

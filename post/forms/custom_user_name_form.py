@@ -3,10 +3,8 @@ from django import forms
 from post.my_models.custom_user import CustomUser
 
 
-class CustomUserForm(ModelForm):
-
-    avatar = forms.ImageField(required=False)
+class CustomUserNameForm(ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'avatar']
+        fields = ['first_name', ]

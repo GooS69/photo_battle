@@ -5,4 +5,4 @@ from .my_views.create_like import CreateLike
 from .my_views.delete_like import DeleteLike
 from .my_views.delete_post import DeletePost
 from .my_views.user_page import UserPage
-from .my_views.update_user import UpdateUser
+from .my_views.update_user import UpdateUserName
