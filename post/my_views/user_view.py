@@ -40,7 +40,7 @@ class UpdateUserAvatar(UserPassesTestMixin, SingleObjectMixin, FormMixin, Proces
 
 
 class UserPosts(UserPassesTestMixin, ListView):
-    template_name = 'post/components/post_list.html'
+    template_name = 'post/components/user_posts_list.html'
     context_object_name = 'posts'
     paginate_by = 10
 

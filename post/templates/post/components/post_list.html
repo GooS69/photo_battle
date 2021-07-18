@@ -1,22 +1,55 @@
 {% if posts %}
-    <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
-        {% for post in posts %}
-        <div id="post{{ post.id }}" class="col">
-            <div class="card shadow-sm">
-                <a href="{% url 'post:detail_page' post.id %}" >
-                    <img src="{{ post.get_img_small_url }}" class="img-fluid mx-auto" alt="img" >
-                </a>
-                    <div class="card-body">
-                        <p class="card-text">{{ post.name }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button id="like" type="button" class="btn btn-danger btn-sm" onclick="deletePost('{% url 'post:delete_post' post.id %}', {{ post.id }})">delete Post</button>
-                            <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
-                        </div>
+            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+                {% for post in posts %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <a href="{% url 'post:detail_page' post.id %}" >
+                            <img src="{{ post.get_img_small_url }}" class="img-fluid mx-auto" alt="img" >
+                        </a>
+                            <div class="card-body">
+                                <p class="card-text">{{ post.name }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p>
+                                        {{ post.number_of_likes }} likes!
+                                    </p>
+                                    <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
+                                </div>
+                            </div>
                     </div>
+                </div>
+                {% endfor %}
             </div>
-        </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <p>No posts are available.</p>
-{% endif %}
+            <div>
+                <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" onclick="getPage('{% url 'post:post_list' sorting %}', 1)">
+                        <span aria-hidden="true">first</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" onclick="getPage('{% url 'post:post_list' sorting %}', {{ page_obj.previous_page_number }})" >
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" onclick="getPage('{% url 'post:post_list' sorting %}', {{ page_obj.next_page_number }} )">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" onclick="getPage('{% url 'post:post_list' sorting %}', {{ page_obj.paginator.num_pages }})">
+                        <span aria-hidden="true">last</span>
+                    </a>
+                </li>
+            {% endif %}
+            </ul>
+
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+
+            </div>
+            {% else %}
+                <p>No posts are available.</p>
+            {% endif %}

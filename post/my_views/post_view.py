@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
 from django.views import View
+from django.views.generic import ListView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin, ProcessFormView, DeletionMixin
 
@@ -28,3 +29,21 @@ class DeletePost(UserPassesTestMixin, DeletionMixin, SingleObjectMixin,View):
 
     def test_func(self):
         return self.request.user == self.get_object().owner
+
+
+class PostList(ListView):
+    template_name = 'post/components/post_list.html'
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_ordering(self):
+        return self.kwargs['sorting']
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sorting'] = self.get_ordering()
+        return context
+
+    def get_queryset(self):
+        self.queryset = Post.objects.filter(status='verified')
+        return super().get_queryset()

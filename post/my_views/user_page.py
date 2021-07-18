@@ -19,8 +19,6 @@ class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        status = escape(self.request.GET.get('status', 'None'))
-        context['posts'] = Post.objects.filter(owner_id=self.kwargs['pk'], status=status)
         context['newPostForm'] = NewPostForm
         context['updateNameForm'] = CustomUserNameForm
         context['updateAvatarForm'] = CustomUserAvatarForm
