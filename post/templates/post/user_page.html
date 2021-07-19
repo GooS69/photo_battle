@@ -30,9 +30,9 @@
                 See your posts
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "verified" %}')">Verified</a></li>
-                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "not_verified" %}')">Not verified</a></li>
-                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "rejected" %}')">Rejected</a></li>
+                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "verified" %}', 1)">Verified</a></li>
+                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "not_verified" %}', 1)">Not verified</a></li>
+                <li><a class="dropdown-item" onclick="getPosts('{% url 'post:user_posts' user.id "rejected" %}', 1)">Rejected</a></li>
             </ul>
 
         <div id="postsElem">
@@ -176,8 +176,8 @@
         }
 
 
-        async function getPosts(url){
-            let response = await fetch(String(url))
+        async function getPosts(url, page){
+            let response = await fetch(String(url) + "?page=" + String(page))
             if (response.ok){
                 let result = await response.text()
                 document.getElementById("postsElem").innerHTML = result
