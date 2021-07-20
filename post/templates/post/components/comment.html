@@ -1,17 +1,18 @@
 {% for comment in parent.comments.all %}
     <div class="row">
 
-        <h3>{{ comment.author }}</h3>
-        <h4>{{ comment.text }} </h4>
+        <h3>{{ comment.author }}:</h3>
+        <h5>{{ comment.text }} </h5>
         {% if comment_form %}
-        <h5>Reply</h5>
-            <form action="" method="post" >
+            <form id="commentForm{{ comment.id }}" method="post" >
                 {% csrf_token %}
                 {{ comment_form.as_p }}
                 <input type="hidden" name="parent_id" value="{{ comment.id }}">
                 <input type="hidden" name="parent_type" value="comment">
-                <input type="submit" value="reply">
             </form>
+            <div class="justify-content-start">
+                <button role="button" class="btn btn-primary"  onclick="newComment('{% url "post:create_comment" post.id %}', 'commentForm{{ comment.id }}')">reply</button>
+            </div>
         {% endif %}
 
     </div>

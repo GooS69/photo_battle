@@ -13,6 +13,9 @@ class CustomUser(AbstractUser):
 
     avatar = models.ImageField(upload_to=image_path.__func__, null=True)
 
+    def __str__(self):
+        return self.first_name
+
     class Meta:
         db_table = 'users'
         verbose_name = 'Пользователь'

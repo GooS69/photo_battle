@@ -22,27 +22,29 @@
                 </div>
             </div>
 
+            <div class="row">
+                <h2>Comments:</h2>
+                <div id="commentsDiv">
             {% if post.comments.all %}
-                <div class="row">
-                    <h2>Comments:</h2>
-                    {% include 'post/components/comment.html' with parent=post %}
-                </div>
+                {% include 'post/components/comment.html' with parent=post %}
             {% else %}
-                <div>
-                    <h2>No comments here. Be first</h2>
-                </div>
+                <h2>No comments here. Be first</h2>
             {% endif %}
+                </div>
+            </div>
 
             {% if comment_form %}
                 <div class="row">
                     <h5>Add comment</h5>
-                    <form action="" method="post" >
+                    <form id="commentForm0" method="post" >
                         {% csrf_token %}
                         {{ comment_form.as_p }}
                         <input type="hidden" name="parent_id" value="{{ post.id }}">
                         <input type="hidden" name="parent_type" value="post">
-                        <input type="submit" value="comment" >
                     </form>
+                    <div class="justify-content-start">
+                        <button role="button" class="btn btn-primary"  onclick="newComment('{% url "post:create_comment" post.id %}', 'commentForm0')">comment</button>
+                    </div>
                 </div>
             {% endif %}
 
@@ -55,11 +57,53 @@
 
         let likeElement = document.getElementById('like')
         let numberOfLikesElement = document.getElementById('numberOfLikes')
+        let commentsElem = document.getElementById('commentsDiv')
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        async function newComment(url, formId){
+            let formDataElem = document.getElementById(String(formId))
+            let response = await fetch(url, {
+                method: "POST",
+                body: new FormData(formDataElem)
+            })
+            if(response.ok){
+                await updateComments()
+            }
+        }
+
+        async function updateComments(){
+            let response = await fetch("{% url 'post:post_comments' post.id %}")
+            if (response.ok){
+                let result = await response.text();
+                commentsElem.innerHTML = ''
+                commentsElem.innerHTML = result
+            }
+        }
 
         async function setLike() {
             let response
             if (is_user_like_this) {
-                response = await fetch("{% url 'post:delete_like' post.id %}");
+                response = await fetch("{% url 'post:delete_like' post.id %}", {
+                    method: "POST",
+                    headers: { "X-CSRFToken": csrftoken },
+                });
                 if (response.ok) {
                     is_user_like_this = false
                     numberOfLikesElement.innerText = Number(numberOfLikesElement.innerText) - 1
@@ -68,7 +112,9 @@
                     alert("no")
                 }
             } else {
-                response = await fetch("{% url 'post:new_like' post.id %}");
+                response = await fetch("{% url 'post:new_like' post.id %}", {
+                    method: "POST",
+                    headers: { "X-CSRFToken": csrftoken },});
                 if (response.ok) {
                     is_user_like_this = true
                     numberOfLikesElement.innerText = Number(numberOfLikesElement.innerText) + 1
@@ -78,8 +124,6 @@
                 }
             }
         }
-
-
 
 
     </script>
