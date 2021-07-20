@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
+from django.utils.html import escape
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.detail import SingleObjectMixin
@@ -45,5 +46,6 @@ class PostList(ListView):
         return context
 
     def get_queryset(self):
-        self.queryset = Post.objects.filter(status='verified')
+        user_filter = escape(self.request.GET['filter'])
+        self.queryset = Post.objects.filter(status='verified', name__icontains=user_filter)
         return super().get_queryset()
