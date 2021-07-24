@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
+from post.api.v1.my_serializers.comment_serializer import CommentSerializer
+from post.my_models.comment import Comment
 from post.my_models.post import Post
 
 
 class PostSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(Comment.objects.all(), many=True)
 
     class Meta:
         model = Post
