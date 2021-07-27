@@ -5,6 +5,12 @@ from post.my_models.comment import Comment
 from post.my_models.post import Post
 
 
+class CreateCommentSerializer(serializers.RelatedField):
+    class Meta:
+        model = Comment
+        fields = ['text']
+
+
 class ContentObjectRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         if isinstance(value, Comment):
@@ -21,4 +27,4 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = [ 'author', 'text', 'comments',]
+        fields = ['author', 'text', 'comments',]
