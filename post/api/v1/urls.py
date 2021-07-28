@@ -22,7 +22,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('post/create', post_view.CreatePost.as_view()),
     path('post/<int:pk>/delete', post_view.DeletePost.as_view()),
-    path('post/list', post_view.PostList.as_view()),
+    path('post/verified_posts', post_view.VerifiedPostList.as_view()),
+    path('post/user_posts', post_view.UserPostsList.as_view()),
     path('like', like_view.LikeView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

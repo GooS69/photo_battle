@@ -1,4 +1,5 @@
 from django.views.generic.detail import SingleObjectMixin
+from drf_yasg.openapi import Parameter, IN_QUERY
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import MultiPartParser
 from rest_framework import permissions
@@ -23,7 +24,6 @@ class CreatePost(APIView):
 
 class DeletePost(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    model = Post
 
     @swagger_auto_schema(responses={200: 'ok'})
     def delete(self, request, *args, **kwargs):
@@ -32,9 +32,26 @@ class DeletePost(APIView):
         return Response()
 
 
-class PostList(APIView):
+class VerifiedPostList(APIView):
 
-    @swagger_auto_schema(responses={200: PostListSerializer})
+    @swagger_auto_schema(manual_parameters=[Parameter(name='filter', in_=IN_QUERY, type='str', default=''), ],
+                         responses={200: PostListSerializer})
     def get(self, request, *args, **kwargs):
-        posts = Post.objects.all()
+        filter = request.GET.get('filter') if request.GET.get('filter') else ''
+        posts = Post.objects.all().filter(status='verified', name__icontains=filter)
+        return Response(PostListSerializer(posts, many=True).data)
+
+
+class UserPostsList(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @swagger_auto_schema(manual_parameters=[Parameter(name='status',
+                                                      in_=IN_QUERY,
+                                                      type='str',
+                                                      enum=['verified', 'not_verified', 'rejected'],
+                                                      default='verified'), ],
+                         responses={200: PostListSerializer})
+    def get(self, request, *args, **kwargs):
+        status = request.GET.get('status')
+        posts = Post.objects.all().filter(status=status, owner=request.user)
         return Response(PostListSerializer(posts, many=True).data)
