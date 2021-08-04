@@ -21,6 +21,11 @@
                             Create new post
                         </button>
                     </p>
+                    <p>
+                        <button id="generateToken" type="button" class="btn btn-primary" onclick="generateToken()">
+                            Generate token
+                        </button>
+                    </p>
                 </div>
                 <div class="col">
 
@@ -136,6 +141,17 @@
                 createPostModal.hide()
             }else {
                 alert("Post not created. Check your data")
+            }
+        }
+
+
+        async function generateToken(){
+            let response = await fetch('/user/generate_token',{
+                method: 'POST',
+                headers: { "X-CSRFToken": csrftoken }
+            })
+            if (response.ok){
+                console.log(await response.json())
             }
         }
 

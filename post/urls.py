@@ -18,6 +18,7 @@ urlpatterns = [
     path('user/<int:pk>/change_name', views.UpdateUserName.as_view(), name='change_user_name'),
     path('user/<int:pk>/change_avatar', views.UpdateUserAvatar.as_view(), name='change_user_avatar'),
     path('user/<int:pk>/posts/<str:status>', views.UserPosts.as_view(), name='user_posts'),
+    path('user/generate_token', views.GenerateToken.as_view(), name='generate_token'),
     path('logout', LogoutView.as_view(next_page='/'), name='logout'),
     path('api/v1/', include('post.api.v1.urls'))
                ]

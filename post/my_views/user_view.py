@@ -1,9 +1,11 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.http import JsonResponse
+from django.views import View
 from django.views.generic import ListView
 
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import ProcessFormView, FormMixin
+from rest_framework.authtoken.models import Token
 
 from post.forms.custom_user_avatar_form import CustomUserAvatarForm
 from post.forms.custom_user_name_form import CustomUserNameForm
@@ -55,3 +57,10 @@ class UserPosts(UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['status'] = self.kwargs['status']
         return context
+
+
+class GenerateToken(View, LoginRequiredMixin):
+
+    def post(self, request, *args, **kwargs):
+        token, _ = Token.objects.get_or_create(user=request.user)
+        return JsonResponse({'auth_token': token.key})

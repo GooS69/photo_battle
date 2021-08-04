@@ -1,14 +1,17 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import permissions
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from post.api.v1.my_serializers.like_serializers import LikeSerializer
+from post.api.utils.service_outcome import ServiceOutcome
+from post.api.v1.servises.like.delete import LikeDeleteService
 from post.my_models.like import Like
 
 
 class LikeView(APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
+    permission_classes = [IsAuthenticated, ]
 
     @swagger_auto_schema(request_body=LikeSerializer, responses={201: 'ok'})
     def post(self, request, *args, **kwargs):
@@ -17,6 +20,8 @@ class LikeView(APIView):
 
     @swagger_auto_schema(request_body=LikeSerializer, responses={200: 'ok'})
     def delete(self, request, *args, **kwargs):
-        like = Like.objects.get(post_id=request.data['post'], user=request.user)
-        like.delete()
-        return Response()
+
+        outcome = ServiceOutcome(LikeDeleteService, {'user': request.user, 'post': request.data.get('post')})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)

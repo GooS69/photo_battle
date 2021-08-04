@@ -21,6 +21,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('post/create', post_view.CreatePost.as_view()),
+    path('post/<int:pk>', post_view.GetPost.as_view()),
     path('post/<int:pk>/delete', post_view.DeletePost.as_view()),
     path('post/verified_posts', post_view.VerifiedPostList.as_view()),
     path('post/user_posts', post_view.UserPostsList.as_view()),

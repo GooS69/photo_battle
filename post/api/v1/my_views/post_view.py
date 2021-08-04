@@ -1,14 +1,13 @@
-from django.views.generic.detail import SingleObjectMixin
 from drf_yasg.openapi import Parameter, IN_QUERY
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import MultiPartParser
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from post.api.v1.my_serializers.comment_serializers import CommentSerializer
 from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer
-from post.my_models.comment import Comment
+from post.api.v1.servises.PostShowService import PostShowService
+from post.api.utils.service_outcome import ServiceOutcome
 from post.my_models.post import Post
 
 
@@ -20,6 +19,15 @@ class CreatePost(APIView):
     def post(self, request, *args, **kwargs):
         post = Post.objects.create(name=request.POST.get('name'), img=self.request.FILES.get('img'), owner=self.request.user)
         return Response()
+
+
+class GetPost(APIView):
+
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(PostShowService, kwargs)
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(PostListSerializer(outcome.result).data)
 
 
 class DeletePost(APIView):
