@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 
 from post.api.v1.my_serializers.like_serializers import LikeSerializer
 from post.api.utils.service_outcome import ServiceOutcome
-from post.api.v1.servises.like.delete import LikeDeleteService
+from post.api.v1.services.like.create import LikeCreateService
+from post.api.v1.services.like.delete import LikeDeleteService
 from post.my_models.like import Like
 
 
@@ -15,8 +16,10 @@ class LikeView(APIView):
 
     @swagger_auto_schema(request_body=LikeSerializer, responses={201: 'ok'})
     def post(self, request, *args, **kwargs):
-        like = Like.objects.create(post_id=request.data['post'], user=request.user)
-        return Response()
+        outcome = ServiceOutcome(LikeCreateService, {'user': request.user, 'post': request.data.get('post')})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(request_body=LikeSerializer, responses={200: 'ok'})
     def delete(self, request, *args, **kwargs):

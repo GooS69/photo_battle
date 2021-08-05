@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer
-from post.api.v1.servises.PostShowService import PostShowService
+from post.api.v1.services.PostShowService import PostShowService
 from post.api.utils.service_outcome import ServiceOutcome
 from post.my_models.post import Post
 
