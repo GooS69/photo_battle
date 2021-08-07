@@ -13,7 +13,7 @@ from post.my_models.post import Post
 
 class LikeCreateService(ServiceWithResult):
     user = ModelField(CustomUser)
-    post = forms.IntegerField(min_value=1)
+    post_id = forms.IntegerField(min_value=1)
 
     custom_validations = ['_post_presence', '_like_not_presence']
 
@@ -30,7 +30,7 @@ class LikeCreateService(ServiceWithResult):
     @lru_cache()
     def _post(self):
         try:
-            return Post.objects.get(id=self.cleaned_data.get('post'))
+            return Post.objects.get(id=self.cleaned_data.get('post_id'))
         except ObjectDoesNotExist:
             return None
 
@@ -46,12 +46,12 @@ class LikeCreateService(ServiceWithResult):
 
     def _post_presence(self):
         if not self._post:
-            self.add_error('post', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("post")} not found'))
+            self.add_error('post_id', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("post_id")} not found'))
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _like_not_presence(self):
         print(self._like)
         if self._like:
             print('*')
-            self.add_error(None, BadRequest(f'Like for post with id={self.cleaned_data.get("post")} already presence'))
+            self.add_error(None, BadRequest(f'Like for post with id={self.cleaned_data.get("post_id")} already presence'))
             self.response_status = status.HTTP_400_BAD_REQUEST
