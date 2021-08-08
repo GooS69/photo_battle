@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from post.api.v1.my_serializers.comment_serializers import CommentSerializer
-from post.my_models.comment import Comment
 from post.my_models.post import Post
+from rest_framework.fields import CharField, ChoiceField
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -17,3 +16,11 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'name', 'img', 'owner', 'pub_date', 'number_of_likes', 'number_of_comments']
+
+
+class PostListRequest(serializers.Serializer):
+    filter = CharField(default='')
+
+
+class UserPostListRequest(serializers.Serializer):
+    status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')])
