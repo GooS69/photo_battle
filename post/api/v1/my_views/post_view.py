@@ -5,39 +5,45 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from post.api.utils.permissions import IsPostOwner
 from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer
 from post.api.v1.services.PostShowService import PostShowService
 from post.api.utils.service_outcome import ServiceOutcome
+from post.api.v1.services.post.create import PostCreateService
+from post.api.v1.services.post.delete import PostDeleteService
 from post.my_models.post import Post
 
 
-class CreatePost(APIView):
+class CreatePostView(APIView):
     parser_classes = [MultiPartParser, ]
     permission_classes = [permissions.IsAuthenticated, ]
 
     @swagger_auto_schema(request_body=CreatePostSerializer, responses={201: 'ok'})
     def post(self, request, *args, **kwargs):
-        post = Post.objects.create(name=request.POST.get('name'), img=self.request.FILES.get('img'), owner=self.request.user)
-        return Response()
-
-
-class GetPost(APIView):
-
-    def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PostShowService, kwargs)
+        outcome = ServiceOutcome(PostCreateService,
+                                 {
+                                    'user': request.user,
+                                    'name': request.data.get('name')
+                                 },
+                                 request.FILES)
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return Response(PostListSerializer(outcome.result).data)
+        return Response(status=status.HTTP_201_CREATED)
 
 
-class DeletePost(APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
+class DeletePostView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsPostOwner]
 
     @swagger_auto_schema(responses={200: 'ok'})
     def delete(self, request, *args, **kwargs):
-        post = Post.objects.get(pk=self.kwargs['pk'])
-        post.delete()
-        return Response()
+        outcome = ServiceOutcome(PostDeleteService, {'user': request.user, 'post_id': kwargs['pk']})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
+
+
+
+
 
 
 class VerifiedPostList(APIView):

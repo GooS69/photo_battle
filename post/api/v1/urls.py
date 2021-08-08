@@ -20,13 +20,13 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('post/create', post_view.CreatePost.as_view()),
-    path('post/<int:pk>', post_view.GetPost.as_view()),
-    path('post/<int:pk>/delete', post_view.DeletePost.as_view()),
-    path('post/verified_posts', post_view.VerifiedPostList.as_view()),
-    path('post/user_posts', post_view.UserPostsList.as_view()),
+    path('post/create', post_view.CreatePostView.as_view()),
+    #path('post/<int:pk>', post_view.GetPost.as_view()),
+    path('post/<int:pk>', post_view.DeletePostView.as_view()),
+    #path('post/verified_posts', post_view.VerifiedPostList.as_view()),
+    #path('post/user_posts', post_view.UserPostsList.as_view()),
     path('like', like_view.LikeView.as_view()),
     path('comment', comment_view.CreateComment.as_view()),
-    path('comment/post/<int:pk>', comment_view.CommentsPost.as_view()),
+    #path('comment/post/<int:pk>', comment_view.CommentsPost.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
