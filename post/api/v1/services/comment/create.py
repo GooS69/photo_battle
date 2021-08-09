@@ -35,7 +35,7 @@ class CommentCreateService(ServiceWithResult):
     def _target(self):
         if self.cleaned_data.get('content_type') == "post":
             try:
-                return Post.objects.get(id=self.cleaned_data.get('object_id'))
+                return Post.objects.get(id=self.cleaned_data.get('object_id'), status='verified')
             except ObjectDoesNotExist:
                 return None
         elif self.cleaned_data.get('content_type') == "comment":

@@ -30,7 +30,7 @@ class LikeCreateService(ServiceWithResult):
     @lru_cache()
     def _post(self):
         try:
-            return Post.objects.get(id=self.cleaned_data.get('post_id'))
+            return Post.objects.get(id=self.cleaned_data.get('post_id'), status='verified')
         except ObjectDoesNotExist:
             return None
 
