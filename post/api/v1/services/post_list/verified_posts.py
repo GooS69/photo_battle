@@ -8,6 +8,8 @@ from post.my_models.post import Post
 
 class VerifiedPostListService(ServiceWithResult):
     filter = forms.CharField(min_length=0, strip=False)
+    ordering = forms.ChoiceField(choices=[('-number_of_likes', 'number_of_likes'),
+                                         ('-number_of_comments', 'number_of_comments'), ('-pub_date', 'pub_date')])
 
     custom_validations = []
 
@@ -20,4 +22,4 @@ class VerifiedPostListService(ServiceWithResult):
     @property
     @lru_cache()
     def _queryset(self):
-        return Post.objects.filter(status='verified', name__icontains=self.cleaned_data.get('filter'))
+        return Post.objects.filter(status='verified', name__icontains=self.cleaned_data.get('filter')).order_by(self.cleaned_data.get('ordering'))

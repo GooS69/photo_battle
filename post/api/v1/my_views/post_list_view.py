@@ -20,7 +20,7 @@ class VerifiedPostList(APIView):
         except KeyError:
             filter = None
 
-        outcome = ServiceOutcome(VerifiedPostListService, {'filter': filter})
+        outcome = ServiceOutcome(VerifiedPostListService, {'filter': filter, 'ordering': request.query_params['ordering']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(PostListSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)

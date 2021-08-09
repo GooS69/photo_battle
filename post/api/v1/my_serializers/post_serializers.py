@@ -20,6 +20,8 @@ class PostListSerializer(serializers.ModelSerializer):
 
 class PostListRequest(serializers.Serializer):
     filter = CharField(default='')
+    ordering = ChoiceField([('-number_of_likes', 'likes'),
+                           ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')])
 
 
 class UserPostListRequest(serializers.Serializer):
