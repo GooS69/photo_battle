@@ -24,5 +24,5 @@ class PostListRequest(serializers.Serializer):
                            ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')])
 
 
-class UserPostListRequest(serializers.Serializer):
+class PostStatusRequest(serializers.Serializer):
     status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')])

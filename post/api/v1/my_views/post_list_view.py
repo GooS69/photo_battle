@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from post.api.utils.service_outcome import ServiceOutcome
-from post.api.v1.my_serializers.post_serializers import PostListRequest, PostListSerializer, UserPostListRequest
+from post.api.v1.my_serializers.post_serializers import PostListRequest, PostListSerializer, PostStatusRequest
 from post.api.v1.services.post_list.user_posts import UserPostListService
 from post.api.v1.services.post_list.verified_posts import VerifiedPostListService
 
@@ -29,7 +29,7 @@ class VerifiedPostList(APIView):
 class UserPostList(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
-    @swagger_auto_schema(query_serializer=UserPostListRequest,
+    @swagger_auto_schema(query_serializer=PostStatusRequest,
                          responses={200: PostListSerializer})
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(UserPostListService,{'user': request.user, 'status': request.query_params['status']})
