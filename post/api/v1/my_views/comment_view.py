@@ -1,5 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
-from drf_yasg.openapi import Parameter, IN_QUERY, IN_BODY
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework import permissions, status
@@ -8,8 +6,6 @@ from rest_framework.views import APIView
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.my_serializers.comment_serializers import CreateCommentSerializer, CommentSerializer
 from post.api.v1.services.comment.create import CommentCreateService
-from post.my_models.comment import Comment
-from post.my_models.post import Post
 
 
 class CreateComment(APIView):
@@ -25,11 +21,3 @@ class CreateComment(APIView):
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_201_CREATED)
-
-
-class CommentsPost(APIView):
-
-    def get(self, request, *args, **kwargs):
-        post = Post.objects.get(pk=self.kwargs['pk'])
-        comments = post.comments
-        return Response(CommentSerializer(comments, many=True).data)
