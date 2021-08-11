@@ -11,7 +11,7 @@ from post.my_models.custom_user import CustomUser
 from post.my_models.post import Post
 
 
-class CommentCreateService(ServiceWithResult):
+class CreateCommentService(ServiceWithResult):
     text = forms.CharField()
     user = ModelField(CustomUser)
     content_type = forms.ChoiceField(choices=[('post', 'post'), ('comment', 'comment')])

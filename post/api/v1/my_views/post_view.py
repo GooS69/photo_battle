@@ -31,7 +31,7 @@ class CreatePostView(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
 
-class DeletePostView(APIView):
+class PostView(APIView):
     permission_classes = [PostPermission, ]
 
     @swagger_auto_schema(responses={200: 'ok'})
@@ -46,3 +46,7 @@ class DeletePostView(APIView):
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(PostListSerializer(outcome.result).data, status=status.HTTP_200_OK)
+
+
+class PostsView(APIView):
+    pass

@@ -17,3 +17,11 @@ class PostPermission(permissions.BasePermission):
                 return post.owner == request.user
             else:
                 return True
+
+
+class CommentPermissions(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+        if request.method in ['POST', 'PUT', 'DELETE']:
+            return bool(request.user and request.user.is_authenticated)
