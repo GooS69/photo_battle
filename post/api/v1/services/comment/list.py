@@ -8,7 +8,7 @@ from post.api.utils.service_with_result import ServiceWithResult
 from post.my_models.post import Post
 
 
-class PostCommentListService(ServiceWithResult):
+class CommentsService(ServiceWithResult):
     post_id = forms.IntegerField(min_value=1)
 
     custom_validations = ['_post_presence', ]

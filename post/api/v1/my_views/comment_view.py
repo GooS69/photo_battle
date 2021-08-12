@@ -6,12 +6,12 @@ from rest_framework.views import APIView
 from post.api.utils.permissions import CommentPermissions
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.my_serializers.comment_serializers import CreateCommentSerializer, CommentSerializer, \
-    PutCommentSerializer
+    PutCommentSerializer, CommentsRequest
 from post.api.v1.services.comment.create import CreateCommentService
 from post.api.v1.services.comment.delete import DeleteCommentService
 from post.api.v1.services.comment.get import GetCommentService
 from post.api.v1.services.comment.put import PutCommentService
-from post.api.v1.services.comment_list.post_comments import PostCommentListService
+from post.api.v1.services.comment.list import CommentsService
 
 
 class CreateCommentView(APIView):
@@ -57,10 +57,11 @@ class CommentView(APIView):
 
 class CommentsView(APIView):
 
-    @swagger_auto_schema(responses={200: CommentSerializer})
+    @swagger_auto_schema(query_serializer=CommentsRequest ,
+                         responses={200: CommentSerializer})
     def get(self, request, *args, **kwargs):
 
-        outcome = ServiceOutcome(PostCommentListService, {'post_id': kwargs['pk']})
+        outcome = ServiceOutcome(CommentsService, {'post_id': request.query_params['post_id']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(CommentSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)

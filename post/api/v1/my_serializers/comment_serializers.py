@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.fields import ChoiceField, CharField
+from rest_framework.fields import ChoiceField, CharField, IntegerField
 
 from post.my_models.comment import Comment
 from post.my_models.post import Post
@@ -31,3 +31,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PutCommentSerializer(serializers.Serializer):
     text = CharField(min_length=1)
+
+
+class CommentsRequest(serializers.Serializer):
+    post_id = IntegerField(min_value=1)
