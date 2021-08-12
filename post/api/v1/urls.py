@@ -1,5 +1,5 @@
 from django.urls import path
-from .my_views import post_view, like_view, comment_view, post_list_view, moderating_view
+from .my_views import post_view, like_view, comment_view, moderating_view
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view

@@ -19,6 +19,13 @@ class PostPermission(permissions.BasePermission):
                 return True
 
 
+class PostsPermissions(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.query_params.get('preset') == 'user_page':
+            return bool(request.user and request.user.is_authenticated)
+        return True
+
+
 class CommentPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'GET':

@@ -5,12 +5,14 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from post.api.utils.permissions import PostPermission
-from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer, PostListRequest
+from post.api.utils.permissions import PostPermission, PostsPermissions
+from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer, PostListRequest, \
+    PostsRequest
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.services.post.create import PostCreateService
 from post.api.v1.services.post.delete import PostDeleteService
 from post.api.v1.services.post.get import PostGetService
+from post.api.v1.services.post.list import PostsService
 from post.my_models.post import Post
 
 
@@ -49,4 +51,14 @@ class PostView(APIView):
 
 
 class PostsView(APIView):
-    pass
+    permission_classes = [PostsPermissions]
+
+    @swagger_auto_schema(query_serializer=PostsRequest, responses={200: PostListSerializer})
+    def get(self, request, *args, **kwargs):
+        print({**{'user': request.user}, **request.query_params.dict()})
+
+        outcome = ServiceOutcome(PostsService, {**{'user': request.user if request.user.is_authenticated else None},
+                                                **request.query_params.dict()})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(PostListSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)

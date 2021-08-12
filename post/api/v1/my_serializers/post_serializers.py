@@ -18,11 +18,10 @@ class PostListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'img', 'owner', 'pub_date', 'number_of_likes', 'number_of_comments']
 
 
-class PostListRequest(serializers.Serializer):
-    filter = CharField(default='')
+class PostsRequest(serializers.Serializer):
+    preset = ChoiceField([('user_page', 'user_page'), ('main_page', 'main_page')] )
+    filter = CharField(min_length=3, required=False)
     ordering = ChoiceField([('-number_of_likes', 'likes'),
-                           ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')])
-
-
-class PostStatusRequest(serializers.Serializer):
-    status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')])
+                            ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')], required=False)
+    status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')],
+                         required=False)
