@@ -1,4 +1,3 @@
-from drf_yasg.openapi import Parameter, IN_QUERY
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import MultiPartParser
 from rest_framework import permissions, status
@@ -6,14 +5,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from post.api.utils.permissions import PostPermission, PostsPermissions
-from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer, PostListRequest, \
-    PostsRequest
+from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer, PostsRequest
 from post.api.utils.service_outcome import ServiceOutcome
-from post.api.v1.services.post.create import PostCreateService
-from post.api.v1.services.post.delete import PostDeleteService
-from post.api.v1.services.post.get import PostGetService
+from post.api.v1.services.post.create import CreatePostService
+from post.api.v1.services.post.delete import DeletePostService
+from post.api.v1.services.post.get import GetPostService
 from post.api.v1.services.post.list import PostsService
-from post.my_models.post import Post
+from post.api.v1.services.post.put import PutPostService
 
 
 class CreatePostView(APIView):
@@ -22,7 +20,7 @@ class CreatePostView(APIView):
 
     @swagger_auto_schema(request_body=CreatePostSerializer, responses={201: 'ok'})
     def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PostCreateService,
+        outcome = ServiceOutcome(CreatePostService,
                                  {
                                     'user': request.user,
                                     'name': request.data.get('name')
@@ -34,20 +32,31 @@ class CreatePostView(APIView):
 
 
 class PostView(APIView):
+    parser_classes = [MultiPartParser, ]
     permission_classes = [PostPermission, ]
 
     @swagger_auto_schema(responses={200: 'ok'})
-    def delete(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PostDeleteService, {'user': request.user, 'post_id': kwargs['pk']})
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(GetPostService, {'post_id': kwargs['pk']})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(PostListSerializer(outcome.result).data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(request_body=CreatePostSerializer, responses={200: 'ok'})
+    def put(self, request, *args, **kwargs):
+        print('***')
+        outcome = ServiceOutcome(PutPostService, {'post_id': kwargs['pk'],
+                                                  'name': request.data.get('name')}, request.FILES)
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_200_OK)
 
-    def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PostGetService, {'post_id': kwargs['pk']})
+    @swagger_auto_schema(responses={200: 'ok'})
+    def delete(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(DeletePostService, {'user': request.user, 'post_id': kwargs['pk']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return Response(PostListSerializer(outcome.result).data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
 
 class PostsView(APIView):

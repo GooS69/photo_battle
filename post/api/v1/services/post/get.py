@@ -10,7 +10,7 @@ from post.my_models.custom_user import CustomUser
 from post.my_models.post import Post
 
 
-class PostGetService(ServiceWithResult):
+class GetPostService(ServiceWithResult):
     post_id = forms.IntegerField(min_value=1)
 
     custom_validations = ['_post_presence', ]

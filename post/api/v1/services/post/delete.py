@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from rest_framework import status
 from service_objects.fields import ModelField
 
@@ -10,11 +10,11 @@ from post.my_models.custom_user import CustomUser
 from post.my_models.post import Post
 
 
-class PostDeleteService(ServiceWithResult):
+class DeletePostService(ServiceWithResult):
     user = ModelField(CustomUser)
     post_id = forms.IntegerField(min_value=1)
 
-    custom_validations = ['_post_presence', ]
+    custom_validations = ['_is_user_owner_or_admin', '_post_presence', ]
 
     def process(self):
         self.run_custom_validations()
@@ -37,3 +37,9 @@ class PostDeleteService(ServiceWithResult):
         if not self._post:
             self.add_error('post_id', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("post_id")} not presence'))
             self.response_status = status.HTTP_404_NOT_FOUND
+
+    def _is_user_owner_or_admin(self):
+        if self._post:
+            if self._post.owner != self.cleaned_data.get('user') and not self.cleaned_data.get('user').is_staff:
+                self.add_error('user', PermissionDenied(f'Forbidden'))
+                self.response_status = status.HTTP_403_FORBIDDEN
