@@ -1,8 +1,10 @@
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from post.api.utils.permissions import PostPermission, PostsPermissions
 from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer, PostsRequest
@@ -64,10 +66,16 @@ class PostsView(APIView):
 
     @swagger_auto_schema(query_serializer=PostsRequest, responses={200: PostListSerializer})
     def get(self, request, *args, **kwargs):
-        print({**{'user': request.user}, **request.query_params.dict()})
-
         outcome = ServiceOutcome(PostsService, {**{'user': request.user if request.user.is_authenticated else None},
                                                 **request.query_params.dict()})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return Response(PostListSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)
+        return self.paginate(outcome.result, request)
+        #return Response(PostListSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)
+
+    def paginate(self, queryset, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = 1
+        paginator.page_size_query_param = 'page_size'
+        paginated_outcome = paginator.paginate_queryset(queryset, request)
+        return paginator.get_paginated_response(PostListSerializer(paginated_outcome, many=True).data)

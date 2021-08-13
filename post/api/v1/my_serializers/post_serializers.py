@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from post.my_models.post import Post
-from rest_framework.fields import CharField, ChoiceField
+from rest_framework.fields import CharField, ChoiceField, IntegerField
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -25,3 +25,4 @@ class PostsRequest(serializers.Serializer):
                             ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')], required=False)
     status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')],
                          required=False)
+    page = IntegerField(min_value=1, default=1)
