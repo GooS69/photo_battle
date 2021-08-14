@@ -1,5 +1,4 @@
 from django.views.generic import ListView
-from django.utils.html import escape
 from ..my_models.post import Post
 
 

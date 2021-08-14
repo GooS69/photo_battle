@@ -8,7 +8,6 @@ from post.api.v1.my_serializers.like_serializers import LikeSerializer
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.services.like.create import LikeCreateService
 from post.api.v1.services.like.delete import LikeDeleteService
-from post.my_models.like import Like
 
 
 class LikeView(APIView):

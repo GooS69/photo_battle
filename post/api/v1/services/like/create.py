@@ -50,8 +50,6 @@ class LikeCreateService(ServiceWithResult):
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _like_not_presence(self):
-        print(self._like)
         if self._like:
-            print('*')
             self.add_error(None, BadRequest(f'Like for post with id={self.cleaned_data.get("post_id")} already presence'))
             self.response_status = status.HTTP_400_BAD_REQUEST

@@ -28,7 +28,6 @@ class CommentsService(ServiceWithResult):
             return None
 
     @property
-    @lru_cache()
     def _comments(self):
         if self._post:
             return self._post.comments

@@ -1,12 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.utils.html import escape
 from django.views.generic import DetailView
 
 from post.forms.custom_user_avatar_form import CustomUserAvatarForm
 from post.forms.custom_user_name_form import CustomUserNameForm
 from post.forms.new_post_form import NewPostForm
 from post.my_models.custom_user import CustomUser
-from post.my_models.post import Post
 
 
 class UserPage(LoginRequiredMixin, UserPassesTestMixin, DetailView):

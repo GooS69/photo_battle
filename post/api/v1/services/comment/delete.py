@@ -38,7 +38,6 @@ class DeleteCommentService(ServiceWithResult):
 
     def _is_user_owner_or_admin(self):
         if self._comment:
-            print(self.cleaned_data.get('user'), self._comment.author)
             if not (self._comment.author == self.cleaned_data.get('user')) and not (self.cleaned_data.get('user').is_staff):
                 self.add_error('user', PermissionDenied(f'Forbidden'))
                 self.response_status = status.HTTP_403_FORBIDDEN

@@ -13,7 +13,6 @@ class ChangePostStatus(APIView):
 
     @swagger_auto_schema(responses={200: 'ok'})
     def patch(self, request, *args, **kwargs):
-        print(request.data.get('status'))
         outcome = ServiceOutcome(ChangePostStatusService, {'post_id': kwargs['pk'], 'status': request.data.get('status')})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)

@@ -3,10 +3,8 @@ from functools import lru_cache
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
-from service_objects.fields import ModelField
 
 from post.api.utils.service_with_result import ServiceWithResult
-from post.my_models.custom_user import CustomUser
 from post.my_models.post import Post
 
 

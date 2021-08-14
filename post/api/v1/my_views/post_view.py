@@ -2,11 +2,11 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import MultiPartParser
 from rest_framework import permissions, status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
 
-from post.api.utils.permissions import PostPermission, PostsPermissions
+from post.api.utils.permissions import PostsPermissions
 from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, PostListSerializer, PostsRequest
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.services.post.create import CreatePostService
@@ -35,7 +35,7 @@ class CreatePostView(APIView):
 
 class PostView(APIView):
     parser_classes = [MultiPartParser, ]
-    permission_classes = [PostPermission, ]
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
     @swagger_auto_schema(responses={200: 'ok'})
     def get(self, request, *args, **kwargs):
@@ -46,7 +46,6 @@ class PostView(APIView):
 
     @swagger_auto_schema(request_body=CreatePostSerializer, responses={200: 'ok'})
     def put(self, request, *args, **kwargs):
-        print('***')
         outcome = ServiceOutcome(PutPostService, {'post_id': kwargs['pk'],
                                                   'name': request.data.get('name')}, request.FILES)
         if bool(outcome.errors):
@@ -64,14 +63,13 @@ class PostView(APIView):
 class PostsView(APIView):
     permission_classes = [PostsPermissions]
 
-    @swagger_auto_schema(query_serializer=PostsRequest, responses={200: PostListSerializer})
+    @swagger_auto_schema(query_serializer=PostsRequest(), responses={200: PostListSerializer()})
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(PostsService, {**{'user': request.user if request.user.is_authenticated else None},
                                                 **request.query_params.dict()})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return self.paginate(outcome.result, request)
-        #return Response(PostListSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)
 
     def paginate(self, queryset, request):
         paginator = PageNumberPagination()

@@ -22,5 +22,3 @@ class DetailPage(UserPassesTestMixin, DetailView):
                                                                post_id=self.kwargs['pk']).exists()
             context['comment_form'] = CommentForm
         return context
-
-

@@ -1,9 +1,9 @@
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 
-from post.api.utils.permissions import CommentPermissions
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.my_serializers.comment_serializers import CreateCommentSerializer, CommentSerializer, \
     PutCommentSerializer, CommentsRequest
@@ -31,16 +31,16 @@ class CreateCommentView(APIView):
 
 class CommentView(APIView):
 
-    permission_classes = [CommentPermissions, ]
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
-    @swagger_auto_schema(responses={200: CommentSerializer})
+    @swagger_auto_schema(responses={200: CommentSerializer()})
     def get(self, request, *args, **kwargs):
         outcome = ServiceOutcome(GetCommentService, {'comment_id': kwargs['pk']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(CommentSerializer(outcome.result).data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(request_body=PutCommentSerializer)
+    @swagger_auto_schema(request_body=PutCommentSerializer, responses={200: 'ok'})
     def put(self, request, *args, **kwargs):
         outcome = ServiceOutcome(PutCommentService, {'user': request.user, 'comment_id': kwargs['pk'],
                                                      'text': request.data.get('text')})
@@ -48,6 +48,7 @@ class CommentView(APIView):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(responses={201: 'ok'})
     def delete(self, request, *args, **kwargs):
         outcome = ServiceOutcome(DeleteCommentService, {'user': request.user,'comment_id': kwargs['pk']})
         if bool(outcome.errors):

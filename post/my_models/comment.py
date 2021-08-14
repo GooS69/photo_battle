@@ -1,4 +1,4 @@
-from django.db import models, transaction
+from django.db import models
 from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
@@ -10,13 +10,7 @@ class Comment(models.Model):
     text = models.TextField()
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='comments',
                                related_query_name='comment')
-
-    # post = my_models.ForeignKey('Post', on_delete=my_models.CASCADE, related_name='comments',
-    # related_query_name='comment') parent = my_models.ForeignKey('self', on_delete=my_models.CASCADE, null=True,
-    # default=None, blank=True, related_name='comments', related_query_name='comment')
-
     comments = GenericRelation('self', related_query_name='parent')
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
