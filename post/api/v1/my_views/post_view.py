@@ -22,11 +22,7 @@ class CreatePostView(APIView):
 
     @swagger_auto_schema(request_body=CreatePostSerializer, responses={201: 'ok'})
     def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CreatePostService,
-                                 {
-                                    'user': request.user,
-                                    'name': request.data.get('name')
-                                 },
+        outcome = ServiceOutcome(CreatePostService, {'user': request.user, 'name': request.data.get('name')},
                                  request.FILES)
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)

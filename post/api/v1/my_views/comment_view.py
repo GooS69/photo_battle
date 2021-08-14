@@ -20,10 +20,7 @@ class CreateCommentView(APIView):
     @swagger_auto_schema(request_body=CreateCommentSerializer,
                          responses={201: 'ok'})
     def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CreateCommentService, {'user': request.user,
-                                                        'text': request.data.get('text'),
-                                                        'content_type': request.data.get('content_type'),
-                                                        'object_id': request.data.get('object_id')})
+        outcome = ServiceOutcome(CreateCommentService, {**{'user': request.user}, **request.data})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_201_CREATED)
