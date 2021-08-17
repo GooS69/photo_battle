@@ -140,7 +140,9 @@
             })
             if(response.ok){
                 alert("Post created")
+                newPostFormElem.reset()
                 createPostModal.hide()
+
             }else {
                 alert("Post not created. Check your data")
             }
