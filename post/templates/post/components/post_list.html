@@ -10,7 +10,18 @@
                                 <p class="card-text">{{ post.name }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p>
-                                        {{ post.number_of_likes }} likes!
+                                        <span id="numberOfLikes{{ post.id }}">{{ post.number_of_likes }}</span>
+                                        {% if user.is_authenticated %}
+                                            <img id="likeElem{{ post.id }}" class="rounded-circle"  width="30" height="30" alt="like"
+                                                {% if post in liked_posts.all %}
+                                                     onclick="setLike(true, {{ post.id }})" src="https://tyumen.badbedshop.ru/wa-data/public/shop/catimg2/3055/image/1082752-1538316192329-02fb799bbd17a.jpg">
+                                                {% else %}
+                                                    onclick="setLike(false, {{ post.id }})" src="https://shuhu-color.com/wp-content/uploads/2018/10/181026.png">
+                                                {% endif %}
+                                        {% else %}
+                                            likes!
+                                        {% endif %}
+
                                     </p>
                                     <small class="text-muted">{{ post.pub_date|date:"d/m/y" }}</small>
                                 </div>
@@ -53,3 +64,56 @@
             {% else %}
                 <p>No posts are available.</p>
             {% endif %}
+
+<script>
+
+    function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+    const csrftoken = getCookie('csrftoken');
+
+
+    async function setLike(is_user_like_this, postId) {
+        let response
+        let likeElem = document.getElementById('likeElem' + postId)
+        let numberOfLikesElement = document.getElementById('numberOfLikes'+ postId)
+            if (is_user_like_this) {
+                response = await fetch("post/"+ postId +"/dislike", {
+                    method: "POST",
+                    headers: { "X-CSRFToken": csrftoken },
+                });
+                if (response.ok) {
+                    numberOfLikesElement.innerText = Number(numberOfLikesElement.innerText) - 1
+                    likeElem.src = "https://shuhu-color.com/wp-content/uploads/2018/10/181026.png"
+                    likeElem.onclick = function (){setLike(false, postId)}
+                } else {
+                    alert("no")
+                }
+            } else {
+                response = await fetch("post/"+ postId +"/like", {
+                    method: "POST",
+                    headers: { "X-CSRFToken": csrftoken },});
+                if (response.ok) {
+                    numberOfLikesElement.innerText = Number(numberOfLikesElement.innerText) + 1
+                    likeElem.src = "https://tyumen.badbedshop.ru/wa-data/public/shop/catimg2/3055/image/1082752-1538316192329-02fb799bbd17a.jpg"
+                    likeElem.onclick = function (){setLike(true, postId)}
+                } else {
+                    alert("no")
+                }
+            }
+        }
+
+</script>
