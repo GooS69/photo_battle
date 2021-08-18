@@ -1,5 +1,5 @@
 from django.urls import path
-from .my_views import post_view, like_view, comment_view, moderating_view
+from .my_views import post_view, like_view, comment_view, moderating_view, user_view
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -26,5 +26,6 @@ urlpatterns = [
     path('comments/<int:pk>', comment_view.CommentView.as_view()),
     path('like', like_view.LikeView.as_view()),
     path('moderating/post_status/<int:pk>', moderating_view.ChangePostStatus.as_view()),
+    path('users', user_view.UsersView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
