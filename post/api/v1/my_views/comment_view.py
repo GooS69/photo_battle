@@ -14,18 +14,6 @@ from post.api.v1.services.comment.put import PutCommentService
 from post.api.v1.services.comment.list import CommentsService
 
 
-class CreateCommentView(APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    @swagger_auto_schema(request_body=CreateCommentSerializer,
-                         responses={201: 'ok'})
-    def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CreateCommentService, {**{'user': request.user}, **request.data})
-        if bool(outcome.errors):
-            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_201_CREATED)
-
-
 class CommentView(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly, ]
@@ -54,12 +42,19 @@ class CommentView(APIView):
 
 
 class CommentsView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
-    @swagger_auto_schema(query_serializer=CommentsRequest ,
-                         responses={200: CommentSerializer})
+    @swagger_auto_schema(query_serializer=CommentsRequest(), responses={200: CommentSerializer()})
     def get(self, request, *args, **kwargs):
 
         outcome = ServiceOutcome(CommentsService, {'post_id': request.query_params['post_id']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(CommentSerializer(outcome.result, many=True).data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(request_body=CreateCommentSerializer, responses={201: 'ok'})
+    def post(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(CreateCommentService, {**{'user': request.user}, **request.data})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)

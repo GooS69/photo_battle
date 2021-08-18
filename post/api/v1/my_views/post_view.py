@@ -16,19 +16,6 @@ from post.api.v1.services.post.list import PostsService
 from post.api.v1.services.post.put import PutPostService
 
 
-class CreatePostView(APIView):
-    parser_classes = [MultiPartParser, ]
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    @swagger_auto_schema(request_body=CreatePostSerializer, responses={201: 'ok'})
-    def post(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(CreatePostService, {'user': request.user, 'name': request.data.get('name')},
-                                 request.FILES)
-        if bool(outcome.errors):
-            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_201_CREATED)
-
-
 class PostView(APIView):
     parser_classes = [MultiPartParser, ]
     permission_classes = [IsAuthenticatedOrReadOnly, ]
@@ -57,6 +44,7 @@ class PostView(APIView):
 
 
 class PostsView(APIView):
+    parser_classes = [MultiPartParser, ]
     permission_classes = [PostsPermissions]
 
     @swagger_auto_schema(query_serializer=PostsRequest(), responses={200: PostListSerializer()})
@@ -73,3 +61,11 @@ class PostsView(APIView):
         paginator.page_size_query_param = 'page_size'
         paginated_outcome = paginator.paginate_queryset(queryset, request)
         return paginator.get_paginated_response(PostListSerializer(paginated_outcome, many=True).data)
+
+    @swagger_auto_schema(request_body=CreatePostSerializer, responses={201: 'ok'})
+    def post(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(CreatePostService, {'user': request.user, 'name': request.data.get('name')},
+                                 request.FILES)
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)

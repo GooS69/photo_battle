@@ -21,10 +21,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('posts/', post_view.PostsView.as_view()),
-    path('posts/create', post_view.CreatePostView.as_view()),
     path('posts/<int:pk>', post_view.PostView.as_view()),
     path('comments/', comment_view.CommentsView.as_view()),
-    path('comments/create', comment_view.CreateCommentView.as_view()),
     path('comments/<int:pk>', comment_view.CommentView.as_view()),
     path('like', like_view.LikeView.as_view()),
     path('moderating/change_post_status/<int:pk>', moderating_view.ChangePostStatus.as_view()),
