@@ -193,7 +193,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
+    'post.my_pipeline.custom_user_details.custom_user_details'
+    #'social_core.pipeline.user.user_details',
 )
 
 LOGGING = {
