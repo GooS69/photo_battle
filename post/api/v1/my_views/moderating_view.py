@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from post.api.utils.service_outcome import ServiceOutcome
+from post.api.v1.my_serializers.post_serializers import ChangePostStatusRequest
 from post.api.v1.services.moderating.change_status import ChangePostStatusService
 
 
 class ChangePostStatus(APIView):
     permission_classes = [permissions.IsAdminUser]
 
-    @swagger_auto_schema(responses={200: 'ok'})
+    @swagger_auto_schema(request_body=ChangePostStatusRequest, responses={200: 'ok'})
     def patch(self, request, *args, **kwargs):
         outcome = ServiceOutcome(ChangePostStatusService, {'post_id': kwargs['pk'], 'status': request.data.get('status')})
         if bool(outcome.errors):

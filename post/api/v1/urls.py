@@ -25,6 +25,6 @@ urlpatterns = [
     path('comments/', comment_view.CommentsView.as_view()),
     path('comments/<int:pk>', comment_view.CommentView.as_view()),
     path('like', like_view.LikeView.as_view()),
-    path('moderating/change_post_status/<int:pk>', moderating_view.ChangePostStatus.as_view()),
+    path('moderating/post_status/<int:pk>', moderating_view.ChangePostStatus.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

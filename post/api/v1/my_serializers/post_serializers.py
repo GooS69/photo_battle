@@ -26,3 +26,7 @@ class PostsRequest(serializers.Serializer):
     status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')],
                          required=False)
     page = IntegerField(min_value=1, default=1)
+
+
+class ChangePostStatusRequest(serializers.Serializer):
+    status = ChoiceField(choices=[('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')])
