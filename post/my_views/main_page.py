@@ -1,6 +1,5 @@
 from django.views.generic import ListView
 
-from ..my_models.like import Like
 from ..my_models.post import Post
 
 
@@ -19,6 +18,5 @@ class MainPage(ListView):
         context['sorting'] = self.get_ordering()
 
         if self.request.user.is_authenticated:
-            print('hghg')
             context['liked_posts'] = Post.objects.filter(like__user=self.request.user)
         return context
