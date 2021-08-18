@@ -5,8 +5,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from post.api.utils.service_outcome import ServiceOutcome
+from post.api.v1.my_serializers.post_serializers import PostListSerializer
 from post.api.v1.my_serializers.user_serializers import UsersListSerializer, UsersRequest
 from post.api.v1.services.user.list import UsersService
+from post.api.v1.services.user.user_posts import UserPostsService
 
 
 class UsersView(APIView):
@@ -25,3 +27,20 @@ class UsersView(APIView):
         paginator.page_size_query_param = 'page_size'
         paginated_outcome = paginator.paginate_queryset(queryset, request)
         return paginator.get_paginated_response(UsersListSerializer(paginated_outcome, many=True).data)
+
+
+class UserPostsView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, *args, **kwargs):
+        outcome = ServiceOutcome(UserPostsService, {'user_id': kwargs['pk']})
+        if bool(outcome.errors):
+            return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
+        return self.paginate(outcome.result, request)
+
+    def paginate(self, queryset, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginator.page_size_query_param = 'page_size'
+        paginated_outcome = paginator.paginate_queryset(queryset, request)
+        return paginator.get_paginated_response(PostListSerializer(paginated_outcome, many=True).data)
