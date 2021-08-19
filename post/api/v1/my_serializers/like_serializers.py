@@ -1,9 +1,6 @@
 from rest_framework import serializers
+from rest_framework.fields import IntegerField
 
-from post.my_models.like import Like
 
-
-class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields = ['post', ]
+class LikeSerializer(serializers.Serializer):
+    post_id = IntegerField(min_value=1)
