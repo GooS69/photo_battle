@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'service_objects',
+    'background_task',
     'post',
 ]
 
