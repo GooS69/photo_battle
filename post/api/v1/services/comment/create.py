@@ -12,12 +12,13 @@ from post.my_models.post import Post
 
 
 class CreateCommentService(ServiceWithResult):
+    root_post_id = forms.IntegerField(min_value=1)
     text = forms.CharField()
     user = ModelField(CustomUser)
     content_type = forms.ChoiceField(choices=[('post', 'post'), ('comment', 'comment')])
     object_id = forms.IntegerField(min_value=1)
 
-    custom_validations = ['_content_type_valid', '_target_presence']
+    custom_validations = ['_target_presence', '_root_post_presence']
 
     def process(self):
         self.run_custom_validations()
@@ -26,7 +27,8 @@ class CreateCommentService(ServiceWithResult):
         return self
 
     def _create_comment(self):
-        return Comment.objects.create(text=self.cleaned_data.get('text'),
+        return Comment.objects.create(root_post=self._root_post,
+                                      text=self.cleaned_data.get('text'),
                                       author=self.cleaned_data.get('user'),
                                       content_object=self._target)
 
@@ -39,12 +41,22 @@ class CreateCommentService(ServiceWithResult):
         except ObjectDoesNotExist:
             return None
 
-    def _content_type_valid(self):
-        if self.cleaned_data.get('content_type') not in ['post', 'comment']:
-            self.add_error('content_type', BadRequest('Content_type must be "Post" or "Comment"'))
-            self.response_status = status.HTTP_400_BAD_REQUEST
+    @property
+    @lru_cache()
+    def _root_post(self):
+        try:
+            return Post.objects.get(id=self.cleaned_data.get('root_post_id'))
+        except ObjectDoesNotExist:
+            return None
 
     def _target_presence(self):
         if not self._target:
             self.add_error(None, ObjectDoesNotExist(f'Object {self.cleaned_data.get("content_type")} '
                                                     f'with id={self.cleaned_data.get("object_id")} not found'))
+            self.response_status = status.HTTP_404_NOT_FOUND
+
+    def _root_post_presence(self):
+        if not self._root_post:
+            self.add_error('root_post_id', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("root_post_id")} '
+                                                              f'not found'))
+            self.response_status = status.HTTP_404_NOT_FOUND

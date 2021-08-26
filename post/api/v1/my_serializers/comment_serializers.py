@@ -6,10 +6,11 @@ from post.my_models.comment import Comment
 
 class CreateCommentSerializer(serializers.ModelSerializer):
     content_type = ChoiceField(choices=[('post', 'post'), ('comment', 'comment')])
+    root_post_id = IntegerField(min_value=1)
 
     class Meta:
         model = Comment
-        fields = ['text', 'content_type', 'object_id']
+        fields = ['root_post_id', 'text', 'content_type', 'object_id']
 
 
 class ContentObjectRelatedField(serializers.RelatedField):
@@ -28,9 +29,19 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['author', 'text', 'comments',]
 
 
+class CommentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'root_post', 'author', 'text', 'object_id']
+
+
 class PutCommentSerializer(serializers.Serializer):
     text = CharField(min_length=1)
 
 
 class CommentsRequest(serializers.Serializer):
-    post_id = IntegerField(min_value=1)
+    post_id = IntegerField(min_value=1, required=False)
+    target_id = IntegerField(min_value=1, required=False)
+    author_id = IntegerField(min_value=1, required=False)
+    text = CharField(min_length=3, required=False)
+    page = IntegerField(min_value=1, default=1)
