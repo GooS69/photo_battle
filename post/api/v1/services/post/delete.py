@@ -35,7 +35,7 @@ class DeletePostService(ServiceWithResult):
 
     def _post_presence(self):
         if not self._post:
-            self.add_error('post_id', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("post_id")} not presence'))
+            self.add_error('post_id', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("post_id")} not found'))
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _is_user_owner_or_admin(self):

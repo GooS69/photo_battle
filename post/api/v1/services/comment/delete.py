@@ -33,7 +33,7 @@ class DeleteCommentService(ServiceWithResult):
     def _comment_presence(self):
         if not self._comment:
             self.add_error('comment_id',
-                           ObjectDoesNotExist(f'Comment with id={self.cleaned_data.get("comment_id")} not presence'))
+                           ObjectDoesNotExist(f'Comment with id={self.cleaned_data.get("comment_id")} not found'))
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _is_user_owner_or_admin(self):

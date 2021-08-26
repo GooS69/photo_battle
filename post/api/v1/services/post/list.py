@@ -50,6 +50,6 @@ class PostsService(ServiceWithResult):
     def _user_page_preset_validate(self):
         if self.cleaned_data.get('preset') == 'user_page':
             if not self.cleaned_data.get('user'):
-                self.add_error('user', ObjectDoesNotExist('User not presence'))
+                self.add_error('user', ObjectDoesNotExist('User not found'))
                 self.response_status = status.HTTP_404_NOT_FOUND
 
