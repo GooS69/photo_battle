@@ -7,10 +7,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 class Comment(models.Model):
-    def __init__(self, *args, **kwargs):
-        super.__init__(*args, **kwargs)
-        self.__new_record = not bool(self.id)
 
+    root_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='all_comments', related_query_name='comment')
     text = models.TextField()
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='comments',
                                related_query_name='comment')
@@ -28,24 +26,16 @@ class Comment(models.Model):
         verbose_name_plural = 'Коментарии'
 
 
-@receiver(pre_save, sender=Comment)
-def set_new_record_flag(sender, instance, *args, **kwargs):
-    instance.__new_record = not bool(instance.id)
-
-
 @receiver(post_save, sender=Comment)
 def incr_number_of_comments_on_post(sender, instance, created, *args, **kwargs):
-    if instance.__new_record:
-        while type(instance.content_object) == Comment:
-            instance = instance.content_object
-        instance.content_object.number_of_comments += 1
-        instance.content_object.save()
+    if created:
+        root_post = instance.root_post
+        root_post.number_of_comments += 1
+        root_post.save()
 
 
 @receiver(pre_delete, sender=Comment)
 def decr_number_of_comments_on_post(sender, instance, *args, **kwargs):
-    while type(instance.content_object) == Comment:
-        instance = instance.content_object
-
-    instance.content_object.number_of_comments -= 1
-    instance.content_object.save()
+    root_post = instance.root_post
+    root_post.number_of_comments -= 1
+    root_post.save()

@@ -21,6 +21,7 @@ class CreateComment(LoginRequiredMixin, FormMixin, View):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.root_post = Post.objects.get(pk=self.kwargs['pk'])
         if self.request.POST.get('parent_type') == 'post':
             form.instance.content_object = Post.objects.get(pk=self.request.POST.get('parent_id'))
         elif self.request.POST.get('parent_type') == 'comment':
