@@ -33,17 +33,10 @@ class CreateCommentService(ServiceWithResult):
     @property
     @lru_cache()
     def _target(self):
-        if self.cleaned_data.get('content_type') == "post":
-            try:
-                return Post.objects.get(id=self.cleaned_data.get('object_id'), status='verified')
-            except ObjectDoesNotExist:
-                return None
-        elif self.cleaned_data.get('content_type') == "comment":
-            try:
-                return Comment.objects.get(id=self.cleaned_data.get('object_id'))
-            except ObjectDoesNotExist:
-                return None
-        else:
+        klass = Post if self.cleaned_data.get('content_type') == "post" else Comment
+        try:
+            return klass.objects.get(id=self.cleaned_data.get('object_id'), status='verified')
+        except ObjectDoesNotExist:
             return None
 
     def _content_type_valid(self):
@@ -54,4 +47,4 @@ class CreateCommentService(ServiceWithResult):
     def _target_presence(self):
         if not self._target:
             self.add_error(None, ObjectDoesNotExist(f'Object {self.cleaned_data.get("content_type")} '
-                                                    f'with id={self.cleaned_data.get("object_id")} not presence'))
+                                                    f'with id={self.cleaned_data.get("object_id")} not found'))

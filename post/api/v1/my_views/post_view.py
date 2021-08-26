@@ -14,6 +14,7 @@ from post.api.v1.services.post.delete import DeletePostService
 from post.api.v1.services.post.get import GetPostService
 from post.api.v1.services.post.list import PostsService
 from post.api.v1.services.post.put import PutPostService
+from post.utils.auto_deleting_posts import paginate
 
 
 class PostView(APIView):
@@ -53,14 +54,14 @@ class PostsView(APIView):
                                                 **request.query_params.dict()})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return self.paginate(outcome.result, request)
+        return paginate(outcome.result, request, PostListSerializer)
 
-    def paginate(self, queryset, request):
-        paginator = PageNumberPagination()
-        paginator.page_size = 1
-        paginator.page_size_query_param = 'page_size'
-        paginated_outcome = paginator.paginate_queryset(queryset, request)
-        return paginator.get_paginated_response(PostListSerializer(paginated_outcome, many=True).data)
+    # def paginate(queryset, request):
+    #     paginator = PageNumberPagination()
+    #     paginator.page_size = 1
+    #     paginator.page_size_query_param = 'page_size'
+    #     paginated_outcome = paginator.paginate_queryset(queryset, request)
+    #     return paginator.get_paginated_response(PostListSerializer(paginated_outcome, many=True).data)
 
     @swagger_auto_schema(request_body=CreatePostSerializer, responses={201: 'ok'})
     def post(self, request, *args, **kwargs):

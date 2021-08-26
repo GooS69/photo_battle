@@ -9,7 +9,6 @@ from post.my_models.post import Post
 
 
 class ChangePostStatusService(ServiceWithResult):
-
     post_id = forms.IntegerField(min_value=1)
     status = forms.ChoiceField(
         choices=[('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')])

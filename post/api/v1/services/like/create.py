@@ -20,10 +20,11 @@ class LikeCreateService(ServiceWithResult):
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self.result = self._create_like()
+            self.result = self._new_like
         return self
 
-    def _create_like(self):
+    @property
+    def _new_like(self):
         return Like.objects.create(post=self._post, user=self.cleaned_data.get('user'))
 
     @property
@@ -38,7 +39,7 @@ class LikeCreateService(ServiceWithResult):
     def _like(self):
         if self._post:
             try:
-                return Like.objects.get(user=self.cleaned_data.get('user'), post=self._post)
+                return self._post.likes.objects.get(user=self.cleaned_data.get('user'))
             except ObjectDoesNotExist:
                 return None
         else:

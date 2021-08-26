@@ -15,7 +15,6 @@ from post.api.v1.services.comment.list import CommentsService
 
 
 class CommentView(APIView):
-
     permission_classes = [IsAuthenticatedOrReadOnly, ]
 
     @swagger_auto_schema(responses={200: CommentSerializer()})
@@ -35,7 +34,7 @@ class CommentView(APIView):
 
     @swagger_auto_schema(responses={201: 'ok'})
     def delete(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(DeleteCommentService, {'user': request.user,'comment_id': kwargs['pk']})
+        outcome = ServiceOutcome(DeleteCommentService, {'user': request.user, 'comment_id': kwargs['pk']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_200_OK)

@@ -13,7 +13,7 @@ from post.my_models.post import Post
 
 class LikeDeleteService(ServiceWithResult):
     user = ModelField(CustomUser)
-    post_id = forms.IntegerField(min_value=1)
+    post_id = forms.IntegerField(min_value=1) # expected like id to work with it
 
     custom_validations = ['_post_presence', '_like_presence']
 

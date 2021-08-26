@@ -11,7 +11,7 @@ from post.my_models.custom_user import CustomUser
 
 
 class PutCommentService(ServiceWithResult):
-    user = ModelField(CustomUser, required=False)
+    user = ModelField(CustomUser)
     comment_id = forms.IntegerField(min_value=1)
     text = forms.CharField(min_length=1)
 
@@ -20,13 +20,13 @@ class PutCommentService(ServiceWithResult):
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self._put()
+            self._update_comment()
+            self.result = self._comment
         return self
 
-    def _put(self):
-        comment = self._comment
-        comment.text = self.cleaned_data.get('text')
-        comment.save()
+    def _update_comment(self):
+        self._comment.text = self.cleaned_data.get('text')
+        self._comment.save()
 
     @property
     @lru_cache()
@@ -43,7 +43,6 @@ class PutCommentService(ServiceWithResult):
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _is_user_admin(self):
-        if self._comment:
-            if not self.cleaned_data.get('user').is_staff:
-                self.add_error('user', PermissionDenied(f'Forbidden'))
-                self.response_status = status.HTTP_403_FORBIDDEN
+        if self._comment and not self.cleaned_data.get('user').is_staff:
+            self.add_error('user', PermissionDenied(f'Forbidden'))
+            self.response_status = status.HTTP_403_FORBIDDEN

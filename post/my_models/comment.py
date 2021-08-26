@@ -7,6 +7,10 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 class Comment(models.Model):
+    def __init__(self, *args, **kwargs):
+        super.__init__(*args, **kwargs)
+        self.__new_record = not bool(self.id)
+
     text = models.TextField()
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='comments',
                                related_query_name='comment')
@@ -30,7 +34,7 @@ def set_new_record_flag(sender, instance, *args, **kwargs):
 
 
 @receiver(post_save, sender=Comment)
-def incr_number_of_comments_on_post(sender, instance, *args, **kwargs):
+def incr_number_of_comments_on_post(sender, instance, created, *args, **kwargs):
     if instance.__new_record:
         while type(instance.content_object) == Comment:
             instance = instance.content_object
