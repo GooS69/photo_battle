@@ -17,14 +17,9 @@ class Like(models.Model):
         constraints = [models.UniqueConstraint(fields=['user', 'post'], name='unique_like'), ]
 
 
-@receiver(pre_save, sender=Like)
-def set_new_record_flag(sender, instance, *args, **kwargs):
-    instance.__new_record = not bool(instance.id)
-
-
 @receiver(post_save, sender=Like)
-def incr_number_of_likes_on_post(sender, instance, *args, **kwargs):
-    if instance.__new_record:
+def incr_number_of_likes_on_post(sender, instance, created, *args, **kwargs):
+    if created:
         instance.post.number_of_likes += 1
         instance.post.save()
 
