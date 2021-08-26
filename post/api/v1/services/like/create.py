@@ -39,7 +39,7 @@ class LikeCreateService(ServiceWithResult):
     def _like(self):
         if self._post:
             try:
-                return self._post.likes.objects.get(user=self.cleaned_data.get('user'))
+                return self._post.likes.get(user=self.cleaned_data.get('user'))
             except ObjectDoesNotExist:
                 return None
         else:

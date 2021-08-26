@@ -1,21 +1,20 @@
 from functools import lru_cache
 
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from rest_framework import status
 from service_objects.fields import ModelField
 
 from post.api.utils.service_with_result import ServiceWithResult
 from post.my_models.custom_user import CustomUser
 from post.my_models.like import Like
-from post.my_models.post import Post
 
 
 class LikeDeleteService(ServiceWithResult):
     user = ModelField(CustomUser)
-    post_id = forms.IntegerField(min_value=1) # expected like id to work with it
+    like_id = forms.IntegerField(min_value=1)
 
-    custom_validations = ['_post_presence', '_like_presence']
+    custom_validations = ['_like_presence', '_user_permissions']
 
     def process(self):
         self.run_custom_validations()
@@ -28,29 +27,19 @@ class LikeDeleteService(ServiceWithResult):
 
     @property
     @lru_cache()
-    def _post(self):
+    def _like(self):
         try:
-            return Post.objects.get(id=self.cleaned_data.get('post_id'))
+            return Like.objects.get(id=self.cleaned_data.get('like_id'))
         except ObjectDoesNotExist:
             return None
 
-    @property
-    @lru_cache()
-    def _like(self):
-        if self._post:
-            try:
-                return Like.objects.get(user=self.cleaned_data.get('user'), post=self._post)
-            except ObjectDoesNotExist:
-                return None
-        else:
-            return None
-
-    def _post_presence(self):
-        if not self._post:
-            self.add_error('post_id', ObjectDoesNotExist(f'Post with id={self.cleaned_data.get("post_id")} not found'))
-            self.response_status = status.HTTP_404_NOT_FOUND
-
     def _like_presence(self):
-        if self._post and not self._like:
-            self.add_error(None, ObjectDoesNotExist(f'Like for post with id={self.cleaned_data.get("post_id")} not found'))
+        if not self._like:
+            self.add_error('like_id', ObjectDoesNotExist(f'Like with id={self.cleaned_data.get("post_id")} not found'))
             self.response_status = status.HTTP_404_NOT_FOUND
+
+    def _user_permissions(self):
+        if self._like and \
+                not (self.cleaned_data.get('user') == self._like.user or self.cleaned_data.get('user').is_staff):
+            self.add_error('user', PermissionDenied(f'User must be owner or admin'))
+            self.response_status = status.HTTP_403_FORBIDDEN
