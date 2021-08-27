@@ -17,10 +17,10 @@ class UpdatePostService(ServiceWithResult):
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self._put()
+            self._update_post()
         return self
 
-    def _put(self):
+    def _update_post(self):
         post = self._post
         post.name = self.cleaned_data.get('name')
         post.img = self.files.get('img')
@@ -40,7 +40,6 @@ class UpdatePostService(ServiceWithResult):
             if self._post.owner != self.cleaned_data.get('user') and not self.cleaned_data.get('user').is_staff:
                 self.add_error('user', PermissionDenied(f'Forbidden'))
                 self.response_status = status.HTTP_403_FORBIDDEN
-
 
     def _post_presence(self):
         if not self._post:
