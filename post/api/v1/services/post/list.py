@@ -1,5 +1,5 @@
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from rest_framework import status
 from service_objects.fields import ModelField
 
@@ -10,15 +10,15 @@ from post.my_models.post import Post
 
 class PostsService(ServiceWithResult):
     user = ModelField(CustomUser, required=False)
-    preset = forms.ChoiceField(choices=[('user_page', 'user_page'), ('main_page', 'main_page')], required=True)
     filter = forms.CharField(min_length=3, required=False)
-    ordering = forms.ChoiceField(choices=[('-number_of_likes', 'number_of_likes'),
-                                          ('-number_of_comments', 'number_of_comments'),
-                                          ('-pub_date', 'pub_date')],required=False)
+    owner_id = forms.IntegerField(min_value=1, required=False)
     status = forms.ChoiceField(
         choices=[('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')], required=False)
+    ordering = forms.ChoiceField(choices=[('-number_of_likes', 'number_of_likes'),
+                                          ('-number_of_comments', 'number_of_comments'),
+                                          ('-pub_date', 'pub_date')], required=False)
 
-    custom_validations = ['_user_page_preset_validate',]
+    custom_validations = ['_owner_presence', '_user_permissions']
 
     def process(self):
         self.run_custom_validations()
@@ -28,28 +28,32 @@ class PostsService(ServiceWithResult):
 
     @property
     def _queryset(self):
-        if self.cleaned_data.get('preset') == 'user_page':
-            return self._user_page_preset()
-        elif self.cleaned_data.get('preset') == 'main_page':
-            return self._main_page_preset()
-
-    def _user_page_preset(self):
+        queryset = Post.objects.all()
+        if self.cleaned_data.get('owner_id'):
+            queryset = queryset.filter(owner=self.cleaned_data.get('owner_id'))
         if self.cleaned_data.get('status'):
-            return Post.objects.filter(owner=self.cleaned_data.get('user'), status=self.cleaned_data.get('status'))
-        else:
-            return Post.objects.filter(owner=self.cleaned_data.get('user'))
-
-    def _main_page_preset(self):
-        queryset = Post.objects.filter(status='verified')
-        if self.cleaned_data.get('filter'):
-            queryset = queryset.filter(name__icontains=self.cleaned_data.get('filter'))
+            queryset = queryset.filter(status=self.cleaned_data.get('status'))
         if self.cleaned_data.get('ordering'):
             queryset = queryset.order_by(self.cleaned_data.get('ordering'))
-        return queryset
+        return queryset.filter(name__icontains=self.cleaned_data.get('filter'))
 
-    def _user_page_preset_validate(self):
-        if self.cleaned_data.get('preset') == 'user_page':
-            if not self.cleaned_data.get('user'):
-                self.add_error('user', ObjectDoesNotExist('User not found'))
-                self.response_status = status.HTTP_404_NOT_FOUND
+    @property
+    def _owner(self):
+        try:
+            return CustomUser.objects.get(id=self.cleaned_data.get('owner_id'))
+        except ObjectDoesNotExist:
+            return None
 
+    def _owner_presence(self):
+        if self.cleaned_data.get('owner_id') and not self._owner:
+            self.add_error('owner_id',
+                           ObjectDoesNotExist(f'User with id={self.cleaned_data.get("owner_id")} not found'))
+            self.response_status = status.HTTP_404_NOT_FOUND
+
+    def _user_permissions(self):
+        if self.cleaned_data.get('status') in ['not_verified', 'rejected'] or not self.cleaned_data.get('status') \
+                and (not self.cleaned_data.get('user')
+                     or (self.cleaned_data.get('user').id != self.cleaned_data.get('owner_id')
+                         and not self.cleaned_data.get('user').is_staff)):
+            self.add_error('user', PermissionDenied(f'User must be owner or admin to see posts with current status'))
+            self.response_status = status.HTTP_403_FORBIDDEN

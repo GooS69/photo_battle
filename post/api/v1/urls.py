@@ -24,6 +24,5 @@ urlpatterns = [
     path('comments/<int:pk>', comment_view.CommentView.as_view()),
     path('like', like_view.LikeView.as_view()),
     path('users', user_view.UsersView.as_view()),
-    path('users/<int:pk>/posts', user_view.UserPostsView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

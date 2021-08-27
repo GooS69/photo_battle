@@ -15,16 +15,16 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'name', 'img', 'owner', 'pub_date', 'number_of_likes', 'number_of_comments']
+        fields = ['id', 'name', 'img', 'status', 'owner', 'pub_date', 'number_of_likes', 'number_of_comments']
 
 
 class PostsRequest(serializers.Serializer):
-    preset = ChoiceField([('user_page', 'user_page'), ('main_page', 'main_page')] )
     filter = CharField(min_length=3, required=False)
-    ordering = ChoiceField([('-number_of_likes', 'likes'),
-                            ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')], required=False)
+    owner_id = IntegerField(min_value=1, required=False)
     status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')],
                          required=False)
+    ordering = ChoiceField([('-number_of_likes', 'likes'),
+                            ('-number_of_comments', 'comments'), ('-pub_date', 'pub_date')], required=False)
     page = IntegerField(min_value=1, default=1)
 
 

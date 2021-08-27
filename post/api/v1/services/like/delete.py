@@ -35,7 +35,7 @@ class LikeDeleteService(ServiceWithResult):
 
     def _like_presence(self):
         if not self._like:
-            self.add_error('like_id', ObjectDoesNotExist(f'Like with id={self.cleaned_data.get("post_id")} not found'))
+            self.add_error('like_id', ObjectDoesNotExist(f'Like with id={self.cleaned_data.get("like_id")} not found'))
             self.response_status = status.HTTP_404_NOT_FOUND
 
     def _user_permissions(self):
