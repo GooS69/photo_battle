@@ -9,8 +9,8 @@ from post.api.v1.my_serializers.comment_serializers import CreateCommentSerializ
     PutCommentSerializer, CommentsRequest, CommentListSerializer
 from post.api.v1.services.comment.create import CreateCommentService
 from post.api.v1.services.comment.delete import DeleteCommentService
-from post.api.v1.services.comment.get import GetCommentService
-from post.api.v1.services.comment.put import PutCommentService
+from post.api.v1.services.comment.get import ShowCommentService
+from post.api.v1.services.comment.put import UpdateCommentService
 from post.api.v1.services.comment.list import CommentsService
 from post.utils.paginator import paginate
 
@@ -20,14 +20,14 @@ class CommentView(APIView):
 
     @swagger_auto_schema(responses={200: CommentSerializer()})
     def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(GetCommentService, {'comment_id': kwargs['pk']})
+        outcome = ServiceOutcome(ShowCommentService, {'comment_id': kwargs['pk']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(CommentSerializer(outcome.result).data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=PutCommentSerializer, responses={200: 'ok'})
     def put(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PutCommentService, {'user': request.user, 'comment_id': kwargs['pk'],
+        outcome = ServiceOutcome(UpdateCommentService, {'user': request.user, 'comment_id': kwargs['pk'],
                                                      'text': request.data.get('text')})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)

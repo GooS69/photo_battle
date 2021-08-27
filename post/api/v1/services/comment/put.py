@@ -10,7 +10,7 @@ from post.my_models.comment import Comment
 from post.my_models.custom_user import CustomUser
 
 
-class PutCommentService(ServiceWithResult):
+class UpdateCommentService(ServiceWithResult):
     user = ModelField(CustomUser)
     comment_id = forms.IntegerField(min_value=1)
     text = forms.CharField(min_length=1)

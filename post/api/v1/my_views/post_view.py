@@ -10,9 +10,9 @@ from post.api.v1.my_serializers.post_serializers import CreatePostSerializer, Po
 from post.api.utils.service_outcome import ServiceOutcome
 from post.api.v1.services.post.create import CreatePostService
 from post.api.v1.services.post.delete import DeletePostService
-from post.api.v1.services.post.get import GetPostService
+from post.api.v1.services.post.get import ShowPostService
 from post.api.v1.services.post.list import PostsService
-from post.api.v1.services.post.put import PutPostService
+from post.api.v1.services.post.put import UpdatePostService
 from post.utils.paginator import paginate
 
 
@@ -22,14 +22,14 @@ class PostView(APIView):
 
     @swagger_auto_schema(responses={200: 'ok'})
     def get(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(GetPostService, {'post_id': kwargs['pk']})
+        outcome = ServiceOutcome(ShowPostService, {'post_id': kwargs['pk']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
         return Response(PostListSerializer(outcome.result).data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=CreatePostSerializer, responses={200: 'ok'})
     def put(self, request, *args, **kwargs):
-        outcome = ServiceOutcome(PutPostService, {'post_id': kwargs['pk'],
+        outcome = ServiceOutcome(UpdatePostService, {'post_id': kwargs['pk'],
                                                   'name': request.data.get('name')}, request.FILES)
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)

@@ -8,7 +8,7 @@ from post.api.utils.service_with_result import ServiceWithResult
 from post.my_models.post import Post
 
 
-class PutPostService(ServiceWithResult):
+class UpdatePostService(ServiceWithResult):
     post_id = forms.IntegerField(min_value=1)
     name = forms.CharField(min_length=1)
 

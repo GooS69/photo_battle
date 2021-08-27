@@ -11,7 +11,7 @@ from post.my_models.like import Like
 from post.my_models.post import Post
 
 
-class LikeCreateService(ServiceWithResult):
+class CreateLikeService(ServiceWithResult):
     user = ModelField(CustomUser)
     post_id = forms.IntegerField(min_value=1)
 
