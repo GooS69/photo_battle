@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dc2e137fe3a2da9d1286c42ffb9d7d02d0df5932b99ac9f6029e7d72ff41a70e"
+            "sha256": "7217bd857e1f0e92bce47ce562e7ed93dcf1c2ed516df047550cac6877d9dcb7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -165,6 +165,14 @@
                 "sha256:3ac9a3bedc56b9365d9eb241bc5157d0c193769bf995f9a78dc1bc24e7c2331b"
             ],
             "version": "==1.0.15"
+        },
+        "django-polymorphic": {
+            "hashes": [
+                "sha256:73b75eb44ea302bd32820f8661e469509d245ce7f7ff09cd2ad149e5c42034ff",
+                "sha256:9d886f19f031d26bb1391c055ed9be06fb226a04a4cec1842b372c58873b3caa"
+            ],
+            "index": "pypi",
+            "version": "==3.0.0"
         },
         "django-service-objects": {
             "hashes": [
@@ -432,11 +440,11 @@
         },
         "ruamel.yaml": {
             "hashes": [
-                "sha256:02f0ed93e98ea32498d25a2952635bbd9fabd553599b8ad67724b4ac88dd8f6c",
-                "sha256:aa1a5b8041bab0d0e8c514949fa8e11b02653061dcbc68365c820b263f8c6ec7"
+                "sha256:1a771fc92d3823682b7f0893ad56cb5a5c87c48e62b5399d6f42c8759a583b33",
+                "sha256:ea21da1198c4b41b8e7a259301cc9710d3b972bf8ba52f06218478e6802dd1f1"
             ],
             "markers": "python_version >= '3'",
-            "version": "==0.17.13"
+            "version": "==0.17.16"
         },
         "ruamel.yaml.clib": {
             "hashes": [

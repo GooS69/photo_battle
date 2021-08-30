@@ -1,21 +1,19 @@
 from django.db import models
-from django.db.models.signals import pre_save, post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.fields import GenericRelation
 
 
-class Comment(models.Model):
+from post.my_models.target_base_class import TargetBaseClass
 
-    root_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='all_comments', related_query_name='comment')
+
+class Comment(TargetBaseClass):
+    root_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='all_comments',
+                                  related_query_name='comment')
     text = models.TextField()
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='comments',
                                related_query_name='comment')
-    comments = GenericRelation('self', related_query_name='parent')
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey()
+    target = models.ForeignKey('TargetBaseClass', on_delete=models.CASCADE, related_name='comments',
+                               related_query_name='inner_comment')
 
     def __str__(self):
         return self.text + ' from ' + self.author.username

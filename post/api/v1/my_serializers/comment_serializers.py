@@ -1,16 +1,16 @@
 from rest_framework import serializers
-from rest_framework.fields import ChoiceField, CharField, IntegerField
+from rest_framework.fields import CharField, IntegerField
 
 from post.my_models.comment import Comment
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
-    content_type = ChoiceField(choices=[('post', 'post'), ('comment', 'comment')])
+    target_id = IntegerField(min_value=1)
     root_post_id = IntegerField(min_value=1)
 
     class Meta:
         model = Comment
-        fields = ['root_post_id', 'text', 'content_type', 'object_id']
+        fields = ['root_post_id', 'text', 'target_id']
 
 
 class ContentObjectRelatedField(serializers.RelatedField):
@@ -32,7 +32,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'root_post', 'author', 'text', 'object_id']
+        fields = ['id', 'root_post', 'author', 'text', 'target']
 
 
 class PutCommentSerializer(serializers.Serializer):

@@ -33,6 +33,7 @@ djangorestframework = "*"
 drf-yasg = "*"
 django-service-objects = "*"
 django-background-tasks = "*"
+django-polymorphic = "*"
 
 [dev-packages]
 

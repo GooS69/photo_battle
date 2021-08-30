@@ -21,7 +21,7 @@ class CommentsService(ServiceWithResult):
         if self.cleaned_data.get('post_id'):
             queryset = queryset.filter(root_post=self.cleaned_data.get('post_id'))
         if self.cleaned_data.get('target_id'):
-            queryset = queryset.filter(object_id=self.cleaned_data.get('target_id'))
+            queryset = queryset.filter(target__id=self.cleaned_data.get('target_id'))
         if self.cleaned_data.get('author_id'):
             queryset = queryset.filter(author=self.cleaned_data.get('author_id'))
         return queryset.filter(text__icontains=self.cleaned_data.get('text'))

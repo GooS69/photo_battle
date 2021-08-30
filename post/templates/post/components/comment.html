@@ -7,8 +7,7 @@
             <form id="commentForm{{ comment.id }}" method="post" >
                 {% csrf_token %}
                 {{ comment_form.as_p }}
-                <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                <input type="hidden" name="parent_type" value="comment">
+                <input type="hidden" name="target_id" value="{{ comment.id }}">
             </form>
             <div class="justify-content-start">
                 <button role="button" class="btn btn-primary"  onclick="newComment('{% url "post:create_comment" post.id %}', 'commentForm{{ comment.id }}')">reply</button>

@@ -5,8 +5,8 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormMixin
 
 from post.forms.comment_form import CommentForm
-from post.my_models.comment import Comment
 from post.my_models.post import Post
+from post.my_models.target_base_class import TargetBaseClass
 
 
 class CreateComment(LoginRequiredMixin, FormMixin, View):
@@ -22,10 +22,7 @@ class CreateComment(LoginRequiredMixin, FormMixin, View):
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.root_post = Post.objects.get(pk=self.kwargs['pk'])
-        if self.request.POST.get('parent_type') == 'post':
-            form.instance.content_object = Post.objects.get(pk=self.request.POST.get('parent_id'))
-        elif self.request.POST.get('parent_type') == 'comment':
-            form.instance.content_object = Comment.objects.get(pk=self.request.POST.get('parent_id'))
+        form.instance.target = TargetBaseClass.objects.get(id=self.request.POST.get('target_id'))
 
         form.save()
         return HttpResponse(status=200)

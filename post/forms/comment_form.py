@@ -8,7 +8,6 @@ class CommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ['text', ]
-        widgets = {'parent_id': HiddenInput,
-                   'parent_type': HiddenInput,
+        widgets = {'target_id': HiddenInput,
                    'text': forms.Textarea(attrs={'rows': 5, 'cols': 30})
                    }

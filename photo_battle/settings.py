@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'service_objects',
     'background_task',
+    'polymorphic',
     'post',
 ]
 
