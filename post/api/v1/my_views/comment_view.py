@@ -31,7 +31,7 @@ class CommentView(APIView):
                                                      'text': request.data.get('text')})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_200_OK)
+        return Response(CommentSerializer(outcome.result).data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(responses={201: 'ok'})
     def delete(self, request, *args, **kwargs):

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from post.my_models.post import Post
-from rest_framework.fields import CharField, ChoiceField, IntegerField
+from rest_framework.fields import CharField, ChoiceField, IntegerField, ImageField
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -16,6 +16,14 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'name', 'img', 'status', 'owner', 'pub_date', 'number_of_likes', 'number_of_comments']
+
+
+class ParticleUpdatePostSerializer(serializers.Serializer):
+    id = IntegerField(min_value=1)
+    name = CharField(min_length=1, required=False)
+    img = ImageField(required=False)
+    status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')],
+                         required=False)
 
 
 class PostsRequest(serializers.Serializer):

@@ -3,12 +3,15 @@ from functools import lru_cache
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from rest_framework import status
+from service_objects.fields import ModelField
 
 from post.api.utils.service_with_result import ServiceWithResult
+from post.my_models.custom_user import CustomUser
 from post.my_models.post import Post
 
 
 class UpdatePostService(ServiceWithResult):
+    user = ModelField(CustomUser)
     post_id = forms.IntegerField(min_value=1)
     name = forms.CharField(min_length=1)
 
@@ -17,7 +20,7 @@ class UpdatePostService(ServiceWithResult):
     def process(self):
         self.run_custom_validations()
         if self.is_valid():
-            self._update_post()
+            self.result = self._update_post()
         return self
 
     def _update_post(self):
@@ -26,6 +29,7 @@ class UpdatePostService(ServiceWithResult):
         post.img = self.files.get('img')
         post.status = 'not_verified'
         post.save()
+        return post
 
     @property
     @lru_cache()
