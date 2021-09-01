@@ -19,7 +19,6 @@ class PostListSerializer(serializers.ModelSerializer):
 
 
 class ParticleUpdatePostSerializer(serializers.Serializer):
-    id = IntegerField(min_value=1)
     name = CharField(min_length=1, required=False)
     img = ImageField(required=False)
     status = ChoiceField([('verified', 'verified'), ('not_verified', 'not_verified'), ('rejected', 'rejected')],
