@@ -12,6 +12,10 @@ from post.my_models.target_base_class import TargetBaseClass
 
 class Post(TargetBaseClass):
 	POST_SAVE_FIELDS = ['img']
+	IMAGE_SIZES = {
+		'_large': (800, 600),
+		'_small': (250, 200)
+	}
 
 	@staticmethod
 	def image_path(self, filename):
@@ -34,22 +38,11 @@ class Post(TargetBaseClass):
 	status = models.CharField(max_length=255, choices=POST_STATUS, default='not_verified')
 
 	def make_thumbnails(self):
-		size_large = (800, 600)
-		size_small = (250, 200)
 		with Image.open(self.img.path) as img:
 			file, ext = os.path.splitext(self.img.path)
-			thumbnail_large = img.resize(size_large)
-			thumbnail_large.save(file + '_large' + ext)
-			thumbnail_small = img.resize(size_small)
-			thumbnail_small.save(file + '_small' + ext)
-
-	def get_img_large_url(self):
-		file, ext = os.path.splitext(self.img.url)
-		return f'{file}_large{ext}'
-
-	def get_img_small_url(self):
-		file, ext = os.path.splitext(self.img.url)
-		return f'{file}_small{ext}'
+			for size in self.IMAGE_SIZES.items():
+				thumbnail = img.resize(size[1])
+				thumbnail.save(file + size[0] + ext)
 
 	def __str__(self):
 		return self.name
@@ -84,5 +77,6 @@ def save_file(sender, instance, created, **kwargs):
 def delete_file(sender, instance, *args, **kwargs):
 	file, ext = os.path.splitext(instance.img.path)
 	default_storage.delete(file + ext)
-	default_storage.delete(file + '_large' + ext)
-	default_storage.delete(file + '_small' + ext)
+	for size in instance.IMAGE_SIZES.items():
+		default_storage.delete(file + size[0] + ext)
+

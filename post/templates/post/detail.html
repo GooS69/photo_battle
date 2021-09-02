@@ -1,13 +1,14 @@
 {% extends 'post/base.html' %}
 {% block content %}
     {% load static %}
+    {% load post_tags %}
 
     <div class="album py-2 bg-light">
         <div class="container">
             <div class="row justify-content-md-center">
                 <div class="col col-lg-10 text-center">
                     <H1>{{ post.name }}</H1>
-                    <img class="img-fluid " src="{{ post.get_img_large_url }}" alt="img">
+                    <img class="img-fluid " src="{% get_img_url post 'large' %}" alt="img">
                     <p><span id="numberOfLikes">{{ post.number_of_likes }}</span> Likes!
                         {% if user.is_authenticated %}
                                 <button id="like" type="button" class="btn btn-primary" onclick="setLike()">
