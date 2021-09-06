@@ -34,6 +34,8 @@ drf-yasg = "*"
 django-service-objects = "*"
 django-background-tasks = "*"
 django-polymorphic = "*"
+celery = "*"
+redis = "*"
 
 [dev-packages]
 

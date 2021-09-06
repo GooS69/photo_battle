@@ -16,6 +16,7 @@ from post.api.v1.services.post.list import PostsService
 from post.api.v1.services.post.patch import ParticleUpdatePostService
 from post.api.v1.services.post.put import UpdatePostService
 from post.utils.paginator import paginate
+from post.tasks import add
 
 
 class PostView(APIView):
@@ -25,6 +26,7 @@ class PostView(APIView):
 
     @swagger_auto_schema(responses={200: 'ok'})
     def get(self, request, *args, **kwargs):
+        add.apply_async((5, 7), countdown=10)
         outcome = ServiceOutcome(ShowPostService, {'post_id': kwargs['pk']})
         if bool(outcome.errors):
             return Response(outcome.errors, outcome.response_status or status.HTTP_400_BAD_REQUEST)
