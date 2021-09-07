@@ -10,6 +10,8 @@ from .my_models.like import Like
 
 from background_task import background
 
+from .templatetags.post_tags import get_img_url
+
 
 @background()
 def delete_posts(post_id):
@@ -52,7 +54,7 @@ class PostAdmin(admin.ModelAdmin):
 
     @staticmethod
     def thumbnail(obj):
-        return format_html('<img src="{}" >'.format(obj.get_img_small_url()))
+        return format_html('<img src="{}" >'.format(get_img_url(obj, 'small')))
 
 
 @admin.register(Comment)
